@@ -15,6 +15,7 @@ type InteractiveMapProps = {
   buses?: TrackedBus[];
   stops?: Stop[];
   marker?: LatLng | null;
+  focus?: (LatLng & { zoom?: number }) | null;
   selectedBusId?: string | null;
   className?: string;
 };
@@ -39,6 +40,7 @@ export function InteractiveMap({
   buses = [],
   stops = [],
   marker = null,
+  focus = null,
   selectedBusId = null,
   className,
 }: InteractiveMapProps) {
@@ -76,6 +78,7 @@ export function InteractiveMap({
               buses={buses}
               stops={stops}
               marker={marker}
+              focus={focus}
               selectedBusId={selectedBusId}
             />
           </Suspense>

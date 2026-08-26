@@ -29,6 +29,7 @@ function PassengerMap() {
   const { data: fleet = [], isPending, error } = useFleet();
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [routeFilter, setRouteFilter] = useState<string>("all");
+  const [place, setPlace] = useState<{ lat: number; lng: number; name: string } | null>(null);
 
   const routes = useMemo(() => {
     const map = new Map<string, string>();

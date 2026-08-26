@@ -51,7 +51,16 @@ function PassengerMap() {
       subtitle={`${liveCount} of ${visible.length} buses currently reporting`}
     >
       <div className="grid gap-4 lg:grid-cols-[1fr_20rem]">
-        <InteractiveMap className="h-[22rem] sm:h-[32rem]" />
+        <InteractiveMap
+          buses={visible}
+          stops={
+            routeFilter === "all"
+              ? []
+              : (visible.find((t) => t.route?.id === routeFilter)?.route?.stops ?? [])
+          }
+          selectedBusId={selectedId}
+          className="h-[22rem] sm:h-[32rem]"
+        />
 
         <div className="flex flex-col gap-3">
           <select

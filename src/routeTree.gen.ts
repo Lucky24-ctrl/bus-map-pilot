@@ -16,7 +16,6 @@ import { Route as DriverTrackingRouteImport } from './routes/driver.tracking'
 import { Route as PassengerIndexRouteImport } from './routes/passenger.index'
 import { Route as ApiPublicGeoapifyHealthRouteImport } from './routes/api/public/geoapify-health'
 import { Route as ApiPublicGeocodeRouteImport } from './routes/api/public/geocode'
-import { Route as ApiPublicMapImageRouteImport } from './routes/api/public/map-image'
 import { Route as ApiPublicReverseGeocodeRouteImport } from './routes/api/public/reverse-geocode'
 import { Route as PassengerBusIdRouteImport } from './routes/passenger.bus.$id'
 
@@ -55,11 +54,6 @@ const ApiPublicGeocodeRoute = ApiPublicGeocodeRouteImport.update({
   path: '/api/public/geocode',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiPublicMapImageRoute = ApiPublicMapImageRouteImport.update({
-  id: '/api/public/map-image',
-  path: '/api/public/map-image',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ApiPublicReverseGeocodeRoute = ApiPublicReverseGeocodeRouteImport.update({
   id: '/api/public/reverse-geocode',
   path: '/api/public/reverse-geocode',
@@ -79,7 +73,6 @@ export interface FileRoutesByFullPath {
   '/passenger/': typeof PassengerIndexRoute
   '/api/public/geoapify-health': typeof ApiPublicGeoapifyHealthRoute
   '/api/public/geocode': typeof ApiPublicGeocodeRoute
-  '/api/public/map-image': typeof ApiPublicMapImageRoute
   '/api/public/reverse-geocode': typeof ApiPublicReverseGeocodeRoute
   '/passenger/bus/$id': typeof PassengerBusIdRoute
 }
@@ -91,7 +84,6 @@ export interface FileRoutesByTo {
   '/passenger': typeof PassengerIndexRoute
   '/api/public/geoapify-health': typeof ApiPublicGeoapifyHealthRoute
   '/api/public/geocode': typeof ApiPublicGeocodeRoute
-  '/api/public/map-image': typeof ApiPublicMapImageRoute
   '/api/public/reverse-geocode': typeof ApiPublicReverseGeocodeRoute
   '/passenger/bus/$id': typeof PassengerBusIdRoute
 }
@@ -104,7 +96,6 @@ export interface FileRoutesById {
   '/passenger/': typeof PassengerIndexRoute
   '/api/public/geoapify-health': typeof ApiPublicGeoapifyHealthRoute
   '/api/public/geocode': typeof ApiPublicGeocodeRoute
-  '/api/public/map-image': typeof ApiPublicMapImageRoute
   '/api/public/reverse-geocode': typeof ApiPublicReverseGeocodeRoute
   '/passenger/bus/$id': typeof PassengerBusIdRoute
 }
@@ -118,7 +109,6 @@ export interface FileRouteTypes {
     | '/passenger/'
     | '/api/public/geoapify-health'
     | '/api/public/geocode'
-    | '/api/public/map-image'
     | '/api/public/reverse-geocode'
     | '/passenger/bus/$id'
   fileRoutesByTo: FileRoutesByTo
@@ -130,7 +120,6 @@ export interface FileRouteTypes {
     | '/passenger'
     | '/api/public/geoapify-health'
     | '/api/public/geocode'
-    | '/api/public/map-image'
     | '/api/public/reverse-geocode'
     | '/passenger/bus/$id'
   id:
@@ -142,7 +131,6 @@ export interface FileRouteTypes {
     | '/passenger/'
     | '/api/public/geoapify-health'
     | '/api/public/geocode'
-    | '/api/public/map-image'
     | '/api/public/reverse-geocode'
     | '/passenger/bus/$id'
   fileRoutesById: FileRoutesById
@@ -155,7 +143,6 @@ export interface RootRouteChildren {
   PassengerIndexRoute: typeof PassengerIndexRoute
   ApiPublicGeoapifyHealthRoute: typeof ApiPublicGeoapifyHealthRoute
   ApiPublicGeocodeRoute: typeof ApiPublicGeocodeRoute
-  ApiPublicMapImageRoute: typeof ApiPublicMapImageRoute
   ApiPublicReverseGeocodeRoute: typeof ApiPublicReverseGeocodeRoute
   PassengerBusIdRoute: typeof PassengerBusIdRoute
 }
@@ -211,13 +198,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicGeocodeRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/map-image': {
-      id: '/api/public/map-image'
-      path: '/api/public/map-image'
-      fullPath: '/api/public/map-image'
-      preLoaderRoute: typeof ApiPublicMapImageRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/api/public/reverse-geocode': {
       id: '/api/public/reverse-geocode'
       path: '/api/public/reverse-geocode'
@@ -243,7 +223,6 @@ const rootRouteChildren: RootRouteChildren = {
   PassengerIndexRoute: PassengerIndexRoute,
   ApiPublicGeoapifyHealthRoute: ApiPublicGeoapifyHealthRoute,
   ApiPublicGeocodeRoute: ApiPublicGeocodeRoute,
-  ApiPublicMapImageRoute: ApiPublicMapImageRoute,
   ApiPublicReverseGeocodeRoute: ApiPublicReverseGeocodeRoute,
   PassengerBusIdRoute: PassengerBusIdRoute,
 }

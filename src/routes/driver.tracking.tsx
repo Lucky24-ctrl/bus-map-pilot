@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 
 import { AppShell } from "@/components/layout/AppShell";
-import { MapView } from "@/components/map/MapView";
+import { InteractiveMap } from "@/components/map/InteractiveMap";
 import { useDriverGeolocation } from "@/hooks/use-driver-geolocation";
 import { useFleet } from "@/hooks/use-fleet";
 import { locationPushIntervalMs } from "@/lib/config";
@@ -84,7 +84,7 @@ function DriverTracking() {
       subtitle={tracked?.route?.name ?? "Route not assigned"}
     >
       <div className="grid gap-4 lg:grid-cols-[1fr_20rem]">
-        <MapView
+        <InteractiveMap
           buses={tracked ? [tracked] : []}
           stops={tracked?.route?.stops ?? []}
           marker={position ? { lat: position.latitude, lng: position.longitude } : null}

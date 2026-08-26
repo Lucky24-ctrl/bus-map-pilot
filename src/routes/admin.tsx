@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 
 import { AppShell } from "@/components/layout/AppShell";
-import { MapView } from "@/components/map/MapView";
+import { InteractiveMap } from "@/components/map/InteractiveMap";
 import { RouteCard } from "@/components/transit/RouteCard";
 import { LiveBadge } from "@/components/transit/LiveBadge";
 import { useFleet } from "@/hooks/use-fleet";
@@ -59,7 +59,7 @@ function Admin() {
         </div>
 
         <div className="flex flex-col gap-4">
-          <MapView
+          <InteractiveMap
             buses={
               selectedRoute ? fleet.filter((t) => t.route?.id === selectedRoute.id) : fleet
             }

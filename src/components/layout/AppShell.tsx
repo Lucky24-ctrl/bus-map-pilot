@@ -9,6 +9,7 @@ const navItems = [
   { to: "/passenger", label: "Live map" },
   { to: "/driver", label: "Driver" },
   { to: "/admin", label: "Admin" },
+  { to: "/login", label: "Sign in" },
 ] as const;
 
 export function AppShell({

@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Gauge, MapPinned, Radio } from "lucide-react";
 
 import { AppShell } from "@/components/layout/AppShell";
-import { MapView } from "@/components/map/MapView";
+import { InteractiveMap } from "@/components/map/InteractiveMap";
 import { useFleet } from "@/hooks/use-fleet";
 
 export const Route = createFileRoute("/")({
@@ -75,7 +75,7 @@ function Home() {
           </div>
         </div>
 
-        <MapView buses={fleet} className="h-72 sm:h-96" />
+        <InteractiveMap buses={fleet} className="h-72 sm:h-96" />
       </section>
 
       <section className="mt-12 grid gap-4 sm:grid-cols-3">

@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 
 import { AppShell } from "@/components/layout/AppShell";
-import { MapView } from "@/components/map/MapView";
+import { InteractiveMap } from "@/components/map/InteractiveMap";
 import { LiveBadge } from "@/components/transit/LiveBadge";
 import { useFleet } from "@/hooks/use-fleet";
 import { formatAgo, formatSpeed, isLive } from "@/lib/transit";
@@ -65,7 +65,7 @@ function BusDetail() {
       </div>
 
       <div className="grid gap-4 lg:grid-cols-[1fr_20rem]">
-        <MapView
+        <InteractiveMap
           buses={[tracked]}
           stops={route?.stops ?? []}
           selectedBusId={bus.id}

@@ -3,6 +3,7 @@ import { useMemo, useState } from "react";
 
 import { AppShell } from "@/components/layout/AppShell";
 import { InteractiveMap } from "@/components/map/InteractiveMap";
+import { PlaceSearch } from "@/components/map/PlaceSearch";
 import { BusCard } from "@/components/transit/BusCard";
 import { useFleet } from "@/hooks/use-fleet";
 import { isLive } from "@/lib/transit";
@@ -59,11 +60,20 @@ function PassengerMap() {
               ? []
               : (visible.find((t) => t.route?.id === routeFilter)?.route?.stops ?? [])
           }
+          marker={place ? { lat: place.lat, lng: place.lng } : null}
+          focus={place}
           selectedBusId={selectedId}
           className="h-[22rem] sm:h-[32rem]"
         />
 
         <div className="flex flex-col gap-3">
+          <PlaceSearch onSelect={setPlace} />
+          {place ? (
+            <p className="text-xs text-muted-foreground">
+              Showing <span className="text-foreground">{place.name}</span>
+            </p>
+          ) : null}
+
           <select
             value={routeFilter}
             onChange={(event) => setRouteFilter(event.target.value)}

@@ -15,6 +15,7 @@ type LeafletMapProps = {
   buses?: TrackedBus[];
   stops?: Stop[];
   marker?: LatLng | null;
+  focus?: (LatLng & { zoom?: number }) | null;
   selectedBusId?: string | null;
   className?: string;
 };
@@ -66,6 +67,7 @@ export default function LeafletMap({
   buses = [],
   stops = [],
   marker = null,
+  focus = null,
   selectedBusId = null,
   className,
 }: LeafletMapProps) {
@@ -161,6 +163,15 @@ export default function LeafletMap({
       map.fitBounds(L.latLngBounds(points), { padding: [40, 40], maxZoom: 15 });
     }
   }, [buses, stops, marker, selectedBusId]);
+
+  // Pan/zoom to a searched place whenever the focus target changes.
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !focus) return;
+    map.flyTo([focus.lat, focus.lng], focus.zoom ?? 15, { duration: 0.8 });
+  }, [focus]);
+
+
 
   return (
     <div className="relative h-full w-full">

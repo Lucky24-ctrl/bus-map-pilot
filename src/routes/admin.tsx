@@ -11,12 +11,12 @@ import { formatAgo, formatSpeed, isLive } from "@/lib/transit";
 export const Route = createFileRoute("/admin")({
   head: () => ({
     meta: [
-      { title: "Fleet admin — BusLive" },
+      { title: "Fleet admin — BusSync" },
       {
         name: "description",
         content: "Operator overview of routes, buses and the freshness of every live signal.",
       },
-      { property: "og:title", content: "Fleet admin — BusLive" },
+      { property: "og:title", content: "Fleet admin — BusSync" },
       {
         property: "og:description",
         content: "Operator overview of routes, buses and live signal health.",

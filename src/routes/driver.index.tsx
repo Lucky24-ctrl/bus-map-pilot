@@ -9,12 +9,12 @@ import { LiveBadge } from "@/components/transit/LiveBadge";
 export const Route = createFileRoute("/driver/")({
   head: () => ({
     meta: [
-      { title: "Driver sign-on — BusLive" },
+      { title: "Driver sign-on — BusSync" },
       {
         name: "description",
         content: "Drivers pick their bus and start sharing device location with passengers.",
       },
-      { property: "og:title", content: "Driver sign-on — BusLive" },
+      { property: "og:title", content: "Driver sign-on — BusSync" },
       {
         property: "og:description",
         content: "Pick your bus and start broadcasting your live position.",

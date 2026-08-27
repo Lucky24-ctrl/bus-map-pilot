@@ -16,12 +16,12 @@ export const Route = createFileRoute("/driver/tracking")({
   }),
   head: () => ({
     meta: [
-      { title: "Broadcasting location — BusLive" },
+      { title: "Broadcasting location — BusSync" },
       {
         name: "description",
         content: "Live driver console broadcasting GPS position to passengers.",
       },
-      { property: "og:title", content: "Broadcasting location — BusLive" },
+      { property: "og:title", content: "Broadcasting location — BusSync" },
       {
         property: "og:description",
         content: "Live driver console broadcasting GPS position to passengers.",

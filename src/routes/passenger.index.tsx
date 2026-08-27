@@ -13,13 +13,13 @@ import { isLive } from "@/lib/transit";
 export const Route = createFileRoute("/passenger/")({
   head: () => ({
     meta: [
-      { title: "Live bus map — BusLive" },
+      { title: "Live bus map — BusSync" },
       {
         name: "description",
         content:
           "Search a location, see nearby bus stops and pick a route with its next departure on the live map.",
       },
-      { property: "og:title", content: "Live bus map — BusLive" },
+      { property: "og:title", content: "Live bus map — BusSync" },
       {
         property: "og:description",
         content:

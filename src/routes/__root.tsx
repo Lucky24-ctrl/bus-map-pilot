@@ -77,7 +77,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "BusLive — Real-time city bus tracking" },
+      { title: "BusSync — Real-time city bus tracking" },
       {
         name: "description",
         content: "Track city buses live on a map, in real time.",

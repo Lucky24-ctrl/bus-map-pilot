@@ -6,13 +6,13 @@ import { AppShell } from "@/components/layout/AppShell";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "BusLive — Real-time city bus tracking" },
+      { title: "BusSync — Real-time city bus tracking" },
       {
         name: "description",
         content:
           "Track city buses live on a map. Passengers see buses move in real time; drivers share their position with one tap.",
       },
-      { property: "og:title", content: "BusLive — Real-time city bus tracking" },
+      { property: "og:title", content: "BusSync — Real-time city bus tracking" },
       {
         property: "og:description",
         content: "Flightradar-style live tracking for city buses, powered by realtime GPS pings.",
@@ -52,7 +52,7 @@ function Home() {
             See every city bus move, live.
           </h1>
           <p className="mt-4 text-sm text-muted-foreground sm:text-base">
-            BusLive is a Flightradar-style tracker for public buses. Drivers share their device
+            BusSync is a Flightradar-style tracker for public buses. Drivers share their device
             location; passengers watch the fleet crawl across the map in real time.
           </p>
           <div className="mt-6 flex flex-wrap justify-center gap-3">

@@ -2,8 +2,6 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Gauge, MapPinned, Radio } from "lucide-react";
 
 import { AppShell } from "@/components/layout/AppShell";
-import { InteractiveMap } from "@/components/map/InteractiveMap";
-import { useFleet } from "@/hooks/use-fleet";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -43,11 +41,9 @@ const features = [
 ];
 
 function Home() {
-  const { data: fleet = [] } = useFleet();
-
   return (
     <AppShell>
-      <section className="grid gap-8 lg:grid-cols-2 lg:items-center">
+      <section className="mx-auto max-w-2xl text-center">
         <div>
           <span className="inline-flex items-center gap-2 rounded-full border border-border px-3 py-1 text-xs text-muted-foreground">
             <span className="h-1.5 w-1.5 rounded-full bg-live" /> Prototype · live vehicle feed
@@ -55,11 +51,11 @@ function Home() {
           <h1 className="mt-4 font-display text-4xl font-semibold leading-tight sm:text-5xl">
             See every city bus move, live.
           </h1>
-          <p className="mt-4 max-w-prose text-sm text-muted-foreground sm:text-base">
+          <p className="mt-4 text-sm text-muted-foreground sm:text-base">
             BusLive is a Flightradar-style tracker for public buses. Drivers share their device
             location; passengers watch the fleet crawl across the map in real time.
           </p>
-          <div className="mt-6 flex flex-wrap gap-3">
+          <div className="mt-6 flex flex-wrap justify-center gap-3">
             <Link
               to="/passenger"
               className="rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
@@ -75,7 +71,6 @@ function Home() {
           </div>
         </div>
 
-        <InteractiveMap buses={fleet} className="h-72 sm:h-96" />
       </section>
 
       <section className="mt-12 grid gap-4 sm:grid-cols-3">

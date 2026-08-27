@@ -7,15 +7,15 @@ import { AppShell } from "@/components/layout/AppShell";
 export const Route = createFileRoute("/login")({
   head: () => ({
     meta: [
-      { title: "Sign in — BusLive" },
+      { title: "Sign in — BusSync" },
       {
         name: "description",
-        content: "Choose how you use BusLive: passenger, driver or admin, then continue.",
+        content: "Choose how you use BusSync: passenger, driver or admin, then continue.",
       },
-      { property: "og:title", content: "Sign in — BusLive" },
+      { property: "og:title", content: "Sign in — BusSync" },
       {
         property: "og:description",
-        content: "Choose how you use BusLive: passenger, driver or admin, then continue.",
+        content: "Choose how you use BusSync: passenger, driver or admin, then continue.",
       },
     ],
   }),
@@ -50,7 +50,7 @@ function LoginPage() {
   function signIn(role: (typeof roles)[number]["id"]) {
     setSelected(role);
     try {
-      localStorage.setItem("buslive.role", role);
+      localStorage.setItem("bussync.role", role);
     } catch {
       // storage may be unavailable; the role is optional context only
     }
@@ -58,7 +58,7 @@ function LoginPage() {
   }
 
   return (
-    <AppShell title="Sign in" subtitle="Tell us how you'll use BusLive to continue.">
+    <AppShell title="Sign in" subtitle="Tell us how you'll use BusSync to continue.">
       <div className="grid gap-3 sm:grid-cols-3">
         {roles.map((role) => (
           <button

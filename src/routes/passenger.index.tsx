@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 
 import { AppShell } from "@/components/layout/AppShell";
 import { InteractiveMap } from "@/components/map/InteractiveMap";
+import { useFleet } from "@/hooks/use-fleet";
 import { PlaceSearch } from "@/components/map/PlaceSearch";
 import { defaultCenter } from "@/lib/config";
 import { formatClock, nearbyStops, routeOptionsFor, toMiles } from "@/lib/nearby";
@@ -30,7 +31,7 @@ export const Route = createFileRoute("/passenger/")({
 });
 
 function PassengerMap() {
-  const { data: fleet = [], isPending, error } = useFleetSafe();
+  const { data: fleet = [], isPending, error } = useFleet();
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [place, setPlace] = useState<{ lat: number; lng: number; name: string } | null>(null);
   const [showAllStops, setShowAllStops] = useState(false);
@@ -181,9 +182,3 @@ function PassengerMap() {
     </AppShell>
   );
 }
-
-function useFleetSafe() {
-  return useFleet();
-}
-
-import { useFleet } from "@/hooks/use-fleet";

@@ -8,6 +8,8 @@ import { useFleet } from "@/hooks/use-fleet";
 import { formatAgo, isLive } from "@/lib/transit";
 import { formatClock } from "@/lib/nearby";
 import { nextStopEta } from "@/lib/simulation";
+import { punctuality } from "@/lib/schedule";
+import { PunctualityBadge } from "@/components/transit/PunctualityBadge";
 
 export const Route = createFileRoute("/passenger/bus/$id")({
   head: () => ({
@@ -74,6 +76,7 @@ function BusDetail() {
 
   const { bus, route } = tracked;
   const eta = nextStopEta(tracked);
+  const status = punctuality(tracked);
 
   return (
     <AppShell title={bus.bus_number} subtitle={route?.name ?? "Unassigned route"}>

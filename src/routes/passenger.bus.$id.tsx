@@ -8,6 +8,8 @@ import { useFleet } from "@/hooks/use-fleet";
 import { formatAgo, isLive } from "@/lib/transit";
 import { formatClock } from "@/lib/nearby";
 import { nextStopEta } from "@/lib/simulation";
+import { punctuality } from "@/lib/schedule";
+import { PunctualityBadge } from "@/components/transit/PunctualityBadge";
 
 export const Route = createFileRoute("/passenger/bus/$id")({
   head: () => ({
@@ -74,11 +76,13 @@ function BusDetail() {
 
   const { bus, route } = tracked;
   const eta = nextStopEta(tracked);
+  const status = punctuality(tracked);
 
   return (
     <AppShell title={bus.bus_number} subtitle={route?.name ?? "Unassigned route"}>
       <div className="mb-4 flex items-center gap-2">
         <LiveBadge live={isLive(location)} />
+        <PunctualityBadge value={status} />
         {tracked.simulated ? (
           <span className="rounded-full border border-border px-2 py-0.5 text-[10px] uppercase tracking-wider text-muted-foreground">
             Simulated
@@ -122,6 +126,13 @@ function BusDetail() {
                 <p className="mt-1.5 text-sm">{eta.stopName}</p>
                 <p className="text-xs text-muted-foreground">
                   Arriving around {formatClock(eta.arrival)}
+                </p>
+                <p className="mt-2 text-xs text-muted-foreground">
+                  {status.status === "on-time"
+                    ? "Running on schedule."
+                    : status.status === "delayed"
+                      ? `Running ${status.minutes} min behind schedule.`
+                      : `Running ${Math.abs(status.minutes)} min ahead of schedule.`}
                 </p>
               </>
             ) : (

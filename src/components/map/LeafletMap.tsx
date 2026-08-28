@@ -120,6 +120,13 @@ export default function LeafletMap({
     layer.clearLayers();
     const points: L.LatLngExpression[] = [];
 
+    if (stops.length > 1) {
+      L.polyline(
+        stops.map((stop) => [stop.lat, stop.lng] as L.LatLngExpression),
+        { color: "#38bdf8", weight: 3, opacity: 0.7 },
+      ).addTo(layer);
+    }
+
     for (const stop of stops) {
       const at: L.LatLngExpression = [stop.lat, stop.lng];
       points.push(at);
@@ -133,6 +140,7 @@ export default function LeafletMap({
         .bindTooltip(stop.name)
         .addTo(layer);
     }
+
 
     for (const tracked of buses) {
       const location = tracked.location;

@@ -32,6 +32,8 @@ export type TrackedBus = {
   bus: Bus;
   route: BusRoute | null;
   location: LiveLocation | null;
+  /** True when the position comes from the built-in test simulation. */
+  simulated?: boolean;
 };
 
 export type LatLng = { lat: number; lng: number };

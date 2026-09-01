@@ -45,6 +45,10 @@ function PassengerMap() {
     () => (place ? routeOptionsFor(fleet, origin, 5) : []),
     [fleet, origin, place],
   );
+  const trackedById = useMemo(
+    () => new Map(fleet.map((item) => [item.bus.id, item])),
+    [fleet],
+  );
 
   const visibleStops = showAllStops ? stops : stops.slice(0, 3);
   const liveCount = fleet.filter((t) => isLive(t.location)).length;

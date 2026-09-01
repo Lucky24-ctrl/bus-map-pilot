@@ -1,15 +1,12 @@
 import { Link } from "@tanstack/react-router";
-import { Bus, Menu } from "lucide-react";
-import { useState, type ReactNode } from "react";
+import { Bus, Home, User } from "lucide-react";
+import type { ReactNode } from "react";
 
-import { cn } from "@/lib/utils";
+import { NotificationBell } from "./NotificationBell";
 
-const navItems = [
-  { to: "/", label: "Home" },
-  { to: "/passenger", label: "Live map" },
-  { to: "/driver", label: "Driver" },
-  { to: "/admin", label: "Admin" },
-  { to: "/login", label: "Sign in" },
+const bottomItems = [
+  { to: "/", label: "Home", icon: Home },
+  { to: "/profile", label: "Profile", icon: User },
 ] as const;
 
 export function AppShell({
@@ -21,10 +18,8 @@ export function AppShell({
   title?: string;
   subtitle?: string;
 }) {
-  const [open, setOpen] = useState(false);
-
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pb-20">
       <header className="sticky top-0 z-30 border-b border-border bg-background/85 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3">
           <Link to="/" className="flex items-center gap-2">
@@ -34,48 +29,8 @@ export function AppShell({
             <span className="font-display text-base font-semibold tracking-tight">BUSSYNC</span>
           </Link>
 
-          <nav className="hidden items-center gap-1 md:flex">
-            {navItems.map((item) => (
-              <Link
-                key={item.to}
-                to={item.to}
-                activeOptions={{ exact: item.to === "/" }}
-                activeProps={{ className: "bg-secondary text-foreground" }}
-                inactiveProps={{ className: "text-muted-foreground" }}
-                className="rounded-md px-3 py-1.5 text-sm transition-colors hover:text-foreground"
-              >
-                {item.label}
-              </Link>
-            ))}
-          </nav>
-
-          <button
-            type="button"
-            onClick={() => setOpen((value) => !value)}
-            className="rounded-md border border-border p-2 md:hidden"
-            aria-label="Toggle navigation"
-          >
-            <Menu className="h-4 w-4" />
-          </button>
+          <NotificationBell />
         </div>
-
-        <nav className={cn("border-t border-border px-4 pb-3 pt-2 md:hidden", !open && "hidden")}>
-          <div className="flex flex-col gap-1">
-            {navItems.map((item) => (
-              <Link
-                key={item.to}
-                to={item.to}
-                activeOptions={{ exact: item.to === "/" }}
-                activeProps={{ className: "bg-secondary text-foreground" }}
-                inactiveProps={{ className: "text-muted-foreground" }}
-                onClick={() => setOpen(false)}
-                className="rounded-md px-3 py-2 text-sm"
-              >
-                {item.label}
-              </Link>
-            ))}
-          </div>
-        </nav>
       </header>
 
       <main className="mx-auto w-full max-w-6xl px-4 py-6">
@@ -87,6 +42,24 @@ export function AppShell({
         ) : null}
         {children}
       </main>
+
+      <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/95 backdrop-blur">
+        <div className="mx-auto flex max-w-6xl items-center justify-around px-4 py-2">
+          {bottomItems.map((item) => (
+            <Link
+              key={item.to}
+              to={item.to}
+              activeOptions={{ exact: item.to === "/" }}
+              activeProps={{ className: "text-primary" }}
+              inactiveProps={{ className: "text-muted-foreground" }}
+              className="flex flex-1 flex-col items-center gap-1 rounded-lg py-1.5 text-[11px] font-medium transition-colors hover:text-foreground"
+            >
+              <item.icon className="h-5 w-5" />
+              {item.label}
+            </Link>
+          ))}
+        </div>
+      </nav>
     </div>
   );
 }

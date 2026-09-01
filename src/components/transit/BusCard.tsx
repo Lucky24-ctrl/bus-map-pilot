@@ -2,9 +2,11 @@ import { Link } from "@tanstack/react-router";
 import { ChevronRight } from "lucide-react";
 
 import { formatAgo, formatSpeed, isLive } from "@/lib/transit";
+import { punctuality } from "@/lib/schedule";
 import type { TrackedBus } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { LiveBadge } from "./LiveBadge";
+import { PunctualityBadge } from "./PunctualityBadge";
 
 type BusCardProps = {
   tracked: TrackedBus;
@@ -30,6 +32,7 @@ export function BusCard({ tracked, active, onSelect }: BusCardProps) {
         <div className="flex items-center gap-2">
           <span className="font-display text-sm font-semibold">{bus.bus_number}</span>
           <LiveBadge live={isLive(location)} />
+          <PunctualityBadge value={punctuality(tracked)} />
         </div>
         <p className="truncate text-xs text-muted-foreground">{route?.name ?? "Unassigned"}</p>
         <p className="mt-1 text-xs text-muted-foreground">

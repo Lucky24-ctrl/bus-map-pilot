@@ -6,8 +6,10 @@ import { AppShell } from "@/components/layout/AppShell";
 import { InteractiveMap } from "@/components/map/InteractiveMap";
 import { useFleet } from "@/hooks/use-fleet";
 import { PlaceSearch } from "@/components/map/PlaceSearch";
+import { PunctualityBadge } from "@/components/transit/PunctualityBadge";
 import { defaultCenter } from "@/lib/config";
 import { formatClock, nearbyStops, routeOptionsFor, toMiles } from "@/lib/nearby";
+import { punctuality } from "@/lib/schedule";
 import { isLive } from "@/lib/transit";
 
 export const Route = createFileRoute("/passenger/")({

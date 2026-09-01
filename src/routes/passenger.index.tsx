@@ -6,8 +6,10 @@ import { AppShell } from "@/components/layout/AppShell";
 import { InteractiveMap } from "@/components/map/InteractiveMap";
 import { useFleet } from "@/hooks/use-fleet";
 import { PlaceSearch } from "@/components/map/PlaceSearch";
+import { PunctualityBadge } from "@/components/transit/PunctualityBadge";
 import { defaultCenter } from "@/lib/config";
 import { formatClock, nearbyStops, routeOptionsFor, toMiles } from "@/lib/nearby";
+import { punctuality } from "@/lib/schedule";
 import { isLive } from "@/lib/transit";
 
 export const Route = createFileRoute("/passenger/")({
@@ -42,6 +44,10 @@ function PassengerMap() {
   const options = useMemo(
     () => (place ? routeOptionsFor(fleet, origin, 5) : []),
     [fleet, origin, place],
+  );
+  const trackedById = useMemo(
+    () => new Map(fleet.map((item) => [item.bus.id, item])),
+    [fleet],
   );
 
   const visibleStops = showAllStops ? stops : stops.slice(0, 3);
@@ -95,6 +101,12 @@ function PassengerMap() {
                           {option.routeName}
                           {option.busNumber ? ` · ${option.busNumber}` : ""}
                         </p>
+                        {option.busId && trackedById.get(option.busId) ? (
+                          <PunctualityBadge
+                            value={punctuality(trackedById.get(option.busId)!)}
+                            className="mt-1.5"
+                          />
+                        ) : null}
                       </div>
                       <div className="text-right">
                         <p className="text-[11px] text-muted-foreground">Departure on:</p>

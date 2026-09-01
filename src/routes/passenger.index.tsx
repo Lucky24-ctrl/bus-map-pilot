@@ -135,7 +135,7 @@ function PassengerMap() {
                       </div>
                     </div>
                     );
-                  })}
+                  }))}
                 )}
               </div>
             </section>

@@ -91,11 +91,7 @@ function PassengerMap() {
                     No routes serve stops near this location.
                   </p>
                 ) : (
-                  options.map((option) => {
-                    const tracked = option.busId
-                      ? fleet.find((item) => item.bus.id === option.busId)
-                      : undefined;
-                    return (
+                  options.map((option) => (
                     <div key={option.key} className="flex items-start gap-3 py-3">
                       <div className="min-w-0 flex-1">
                         <p className="truncate font-display text-sm font-semibold">

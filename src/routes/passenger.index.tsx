@@ -87,7 +87,11 @@ function PassengerMap() {
                     No routes serve stops near this location.
                   </p>
                 ) : (
-                  options.map((option) => (
+                  options.map((option) => {
+                    const tracked = option.busId
+                      ? fleet.find((item) => item.bus.id === option.busId)
+                      : undefined;
+                    return (
                     <div key={option.key} className="flex items-start gap-3 py-3">
                       <div className="min-w-0 flex-1">
                         <p className="truncate font-display text-sm font-semibold">
@@ -97,6 +101,9 @@ function PassengerMap() {
                           {option.routeName}
                           {option.busNumber ? ` · ${option.busNumber}` : ""}
                         </p>
+                        {tracked ? (
+                          <PunctualityBadge value={punctuality(tracked)} className="mt-1.5" />
+                        ) : null}
                       </div>
                       <div className="text-right">
                         <p className="text-[11px] text-muted-foreground">Departure on:</p>

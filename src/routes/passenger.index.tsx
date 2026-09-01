@@ -101,8 +101,11 @@ function PassengerMap() {
                           {option.routeName}
                           {option.busNumber ? ` · ${option.busNumber}` : ""}
                         </p>
-                        {tracked ? (
-                          <PunctualityBadge value={punctuality(tracked)} className="mt-1.5" />
+                        {option.busId && trackedById.get(option.busId) ? (
+                          <PunctualityBadge
+                            value={punctuality(trackedById.get(option.busId)!)}
+                            className="mt-1.5"
+                          />
                         ) : null}
                       </div>
                       <div className="text-right">

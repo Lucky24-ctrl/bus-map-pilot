@@ -5,7 +5,9 @@ import { AppShell } from "@/components/layout/AppShell";
 import { InteractiveMap } from "@/components/map/InteractiveMap";
 import { RouteCard } from "@/components/transit/RouteCard";
 import { LiveBadge } from "@/components/transit/LiveBadge";
+import { PunctualityBadge } from "@/components/transit/PunctualityBadge";
 import { useFleet } from "@/hooks/use-fleet";
+import { punctuality } from "@/lib/schedule";
 import { formatAgo, formatSpeed, isLive } from "@/lib/transit";
 
 export const Route = createFileRoute("/admin")({
@@ -76,6 +78,7 @@ function Admin() {
                   <th className="px-4 py-3">Speed</th>
                   <th className="px-4 py-3">Last ping</th>
                   <th className="px-4 py-3">Status</th>
+                  <th className="px-4 py-3">Schedule</th>
                 </tr>
               </thead>
               <tbody>
@@ -91,6 +94,9 @@ function Admin() {
                     </td>
                     <td className="px-4 py-3">
                       <LiveBadge live={isLive(tracked.location)} />
+                    </td>
+                    <td className="px-4 py-3">
+                      <PunctualityBadge value={punctuality(tracked)} />
                     </td>
                   </tr>
                 ))}

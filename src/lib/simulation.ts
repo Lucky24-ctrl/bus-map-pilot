@@ -1,5 +1,5 @@
 import { distanceKm } from "./nearby";
-import type { LatLng, LiveLocation, Stop, TrackedBus } from "./types";
+import type { LatLng, LiveLocation, TrackedBus } from "./types";
 
 /** Average simulated cruising speed, km/h. */
 export const SIM_SPEED_KMH = 26;

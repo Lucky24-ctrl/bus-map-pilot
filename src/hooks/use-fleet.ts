@@ -16,7 +16,9 @@ export function useFleet() {
 
   useEffect(() => {
     const channel = supabase
-      .channel("live-locations")
+      // Unique per subscriber: two components using this hook must not share
+      // one channel, or the second `.on()` runs after `subscribe()` and throws.
+      .channel(`live-locations-${Math.random().toString(36).slice(2)}`)
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "live_locations" },

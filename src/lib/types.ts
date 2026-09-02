@@ -8,6 +8,8 @@ export type BusRoute = {
   id: string;
   name: string;
   stops: Stop[];
+  /** Road-following polyline through the stops (from Geoapify routing). */
+  path?: LatLng[];
 };
 
 export type Bus = {

@@ -10,7 +10,7 @@ type PathPoint = LatLng & { cumulativeKm: number };
  * Builds a closed loop through every stop of a route (last stop back to the
  * first) with cumulative distances, so a bus can be animated around it.
  */
-export function buildLoop(stops: Stop[]): PathPoint[] {
+export function buildLoop(stops: LatLng[]): PathPoint[] {
   if (stops.length < 2) return [];
   const ordered = [...stops, stops[0]!];
   const points: PathPoint[] = [];
@@ -75,7 +75,10 @@ function offsetFor(id: string): number {
  * shows realistic movement whenever no real driver device is reporting.
  */
 export function simulateLocation(tracked: TrackedBus, now: number): LiveLocation | null {
-  const stops = tracked.route?.stops ?? [];
+  // Prefer the road-following path so buses drive along streets, not across
+  // lakes and buildings; fall back to straight stop-to-stop lines.
+  const road = tracked.route?.path ?? [];
+  const stops: LatLng[] = road.length > 1 ? road : (tracked.route?.stops ?? []);
   const loop = buildLoop(stops);
   const total = loopLengthKm(loop);
   if (total <= 0) return null;

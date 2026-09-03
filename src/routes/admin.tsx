@@ -31,6 +31,7 @@ export const Route = createFileRoute("/admin")({
 
 function Admin() {
   const { data: fleet = [], isPending } = useFleet();
+  const ambulances = useAmbulances();
   const [routeId, setRouteId] = useState<string | null>(null);
 
   const routes = [...new Map(fleet.flatMap((t) => (t.route ? [[t.route.id, t.route]] : []))).values()];

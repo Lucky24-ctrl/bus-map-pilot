@@ -35,6 +35,7 @@ export const Route = createFileRoute("/passenger/")({
 
 function PassengerMap() {
   const { data: fleet = [], isPending, error } = useFleet();
+  const ambulances = useAmbulances();
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [place, setPlace] = useState<{ lat: number; lng: number; name: string } | null>(null);
   const [showAllStops, setShowAllStops] = useState(false);

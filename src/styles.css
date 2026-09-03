@@ -154,3 +154,55 @@
     box-shadow: 0 0 0 14px oklch(0.78 0.19 145 / 0);
   }
 }
+
+.ambulance-beacon {
+  position: relative;
+  display: flex;
+  width: 30px;
+  height: 30px;
+  align-items: center;
+  justify-content: center;
+}
+
+.ambulance-beacon__pulse {
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  background: oklch(0.6 0.23 25 / 0.55);
+  animation: ambulance-beep 1.2s ease-out infinite;
+}
+
+.ambulance-beacon__core {
+  position: relative;
+  display: flex;
+  width: 22px;
+  height: 22px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  background: oklch(0.55 0.24 27);
+  border: 2px solid #ffffff;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
+  animation: ambulance-flash 1.2s ease-in-out infinite;
+}
+
+@keyframes ambulance-beep {
+  0% {
+    transform: scale(0.6);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(1.8);
+    opacity: 0;
+  }
+}
+
+@keyframes ambulance-flash {
+  0%,
+  100% {
+    filter: brightness(1);
+  }
+  50% {
+    filter: brightness(1.6);
+  }
+}

@@ -3,6 +3,7 @@ import { useState } from "react";
 
 import { AppShell } from "@/components/layout/AppShell";
 import { InteractiveMap } from "@/components/map/InteractiveMap";
+import { useAmbulances } from "@/hooks/use-ambulances";
 import { RouteCard } from "@/components/transit/RouteCard";
 import { LiveBadge } from "@/components/transit/LiveBadge";
 import { PunctualityBadge } from "@/components/transit/PunctualityBadge";
@@ -30,6 +31,7 @@ export const Route = createFileRoute("/admin")({
 
 function Admin() {
   const { data: fleet = [], isPending } = useFleet();
+  const ambulances = useAmbulances();
   const [routeId, setRouteId] = useState<string | null>(null);
 
   const routes = [...new Map(fleet.flatMap((t) => (t.route ? [[t.route.id, t.route]] : []))).values()];
@@ -66,6 +68,7 @@ function Admin() {
               selectedRoute ? fleet.filter((t) => t.route?.id === selectedRoute.id) : fleet
             }
             stops={selectedRoute?.stops ?? []}
+            ambulances={ambulances}
             className="h-64 sm:h-80"
           />
 

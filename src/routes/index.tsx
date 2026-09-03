@@ -6,16 +6,16 @@ import { AppShell } from "@/components/layout/AppShell";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "BusSync — Real-time city bus tracking" },
+      { title: "BUSSYNC — Real-time public transport tracking" },
       {
         name: "description",
         content:
-          "Track city buses live on a map. Passengers see buses move in real time; drivers share their position with one tap.",
+          "Track buses, shuttles, and ambulances live on one map. Passengers see vehicles move in real time; drivers share their position with one tap.",
       },
-      { property: "og:title", content: "BusSync — Real-time city bus tracking" },
+      { property: "og:title", content: "BUSSYNC — Real-time public transport tracking" },
       {
         property: "og:description",
-        content: "Flightradar-style live tracking for city buses, powered by realtime GPS pings.",
+        content: "Live, road-snapped tracking for city buses and emergency vehicles — powered by realtime GPS pings.",
       },
     ],
   }),

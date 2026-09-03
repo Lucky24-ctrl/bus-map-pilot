@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
+import type { AmbulancePosition } from "@/lib/ambulances";
 import { isLive } from "@/lib/transit";
 import type { LatLng, Stop, TrackedBus } from "@/lib/types";
 
@@ -17,6 +18,7 @@ type LeafletMapProps = {
   marker?: LatLng | null;
   focus?: (LatLng & { zoom?: number }) | null;
   selectedBusId?: string | null;
+  ambulances?: AmbulancePosition[];
   className?: string;
 };
 
@@ -33,6 +35,22 @@ function busIcon(color: string, selected: boolean): L.DivIcon {
       box-shadow:0 1px 4px rgba(0,0,0,.45);
       font-size:${selected ? 15 : 12}px;line-height:1;
     ">🚌</span>`,
+  });
+}
+
+function ambulanceIcon(): L.DivIcon {
+  return L.divIcon({
+    className: "",
+    iconSize: [30, 30],
+    iconAnchor: [15, 15],
+    html: `<span class="ambulance-beacon">
+      <span class="ambulance-beacon__pulse"></span>
+      <span class="ambulance-beacon__core">
+        <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true">
+          <path fill="#ffffff" d="M9.5 2h5v5.5H20v5h-5.5V18h-5v-5.5H4v-5h5.5z"/>
+        </svg>
+      </span>
+    </span>`,
   });
 }
 
@@ -69,6 +87,7 @@ export default function LeafletMap({
   marker = null,
   focus = null,
   selectedBusId = null,
+  ambulances = [],
   className,
 }: LeafletMapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -120,7 +139,20 @@ export default function LeafletMap({
     layer.clearLayers();
     const points: L.LatLngExpression[] = [];
 
-    if (stops.length > 1) {
+    const drawnPaths = new Set<string>();
+    for (const tracked of buses) {
+      const path = tracked.route?.path;
+      if (!path || path.length < 2) continue;
+      const key = tracked.route!.id;
+      if (drawnPaths.has(key)) continue;
+      drawnPaths.add(key);
+      L.polyline(
+        path.map((point) => [point.lat, point.lng] as L.LatLngExpression),
+        { color: "#38bdf8", weight: 4, opacity: 0.75 },
+      ).addTo(layer);
+    }
+
+    if (drawnPaths.size === 0 && stops.length > 1) {
       L.polyline(
         stops.map((stop) => [stop.lat, stop.lng] as L.LatLngExpression),
         { color: "#38bdf8", weight: 3, opacity: 0.7 },
@@ -154,6 +186,14 @@ export default function LeafletMap({
         .addTo(layer);
     }
 
+    for (const unit of ambulances) {
+      const at: L.LatLngExpression = [unit.lat, unit.lng];
+      points.push(at);
+      L.marker(at, { icon: ambulanceIcon(), zIndexOffset: 1000 })
+        .bindTooltip(`${unit.code} · ${unit.hospital}`)
+        .addTo(layer);
+    }
+
     if (marker) {
       const at: L.LatLngExpression = [marker.lat, marker.lng];
       points.push(at);
@@ -170,7 +210,7 @@ export default function LeafletMap({
       fittedKeyRef.current = fitKey;
       map.fitBounds(L.latLngBounds(points), { padding: [40, 40], maxZoom: 15 });
     }
-  }, [buses, stops, marker, selectedBusId]);
+  }, [buses, stops, marker, selectedBusId, ambulances]);
 
   // Pan/zoom to a searched place whenever the focus target changes.
   useEffect(() => {

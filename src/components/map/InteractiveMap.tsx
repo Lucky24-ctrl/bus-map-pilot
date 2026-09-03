@@ -2,6 +2,7 @@ import { ClientOnly } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { Suspense, lazy } from "react";
 
+import type { AmbulancePosition } from "@/lib/ambulances";
 import { defaultCenter } from "@/lib/config";
 import { getGeoapifyMapKey } from "@/lib/geoapify-key.functions";
 import type { LatLng, Stop, TrackedBus } from "@/lib/types";
@@ -17,6 +18,7 @@ type InteractiveMapProps = {
   marker?: LatLng | null;
   focus?: (LatLng & { zoom?: number }) | null;
   selectedBusId?: string | null;
+  ambulances?: AmbulancePosition[];
   className?: string;
 };
 
@@ -42,6 +44,7 @@ export function InteractiveMap({
   marker = null,
   focus = null,
   selectedBusId = null,
+  ambulances = [],
   className,
 }: InteractiveMapProps) {
   const { data, isPending, error } = useQuery({
@@ -80,6 +83,7 @@ export function InteractiveMap({
               marker={marker}
               focus={focus}
               selectedBusId={selectedBusId}
+              ambulances={ambulances}
             />
           </Suspense>
         </ClientOnly>

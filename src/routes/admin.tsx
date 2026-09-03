@@ -3,6 +3,7 @@ import { useState } from "react";
 
 import { AppShell } from "@/components/layout/AppShell";
 import { InteractiveMap } from "@/components/map/InteractiveMap";
+import { useAmbulances } from "@/hooks/use-ambulances";
 import { RouteCard } from "@/components/transit/RouteCard";
 import { LiveBadge } from "@/components/transit/LiveBadge";
 import { PunctualityBadge } from "@/components/transit/PunctualityBadge";
@@ -66,6 +67,7 @@ function Admin() {
               selectedRoute ? fleet.filter((t) => t.route?.id === selectedRoute.id) : fleet
             }
             stops={selectedRoute?.stops ?? []}
+            ambulances={ambulances}
             className="h-64 sm:h-80"
           />
 

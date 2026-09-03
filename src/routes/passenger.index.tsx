@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 
 import { AppShell } from "@/components/layout/AppShell";
 import { InteractiveMap } from "@/components/map/InteractiveMap";
+import { useAmbulances } from "@/hooks/use-ambulances";
 import { useFleet } from "@/hooks/use-fleet";
 import { PlaceSearch } from "@/components/map/PlaceSearch";
 import { PunctualityBadge } from "@/components/transit/PunctualityBadge";
@@ -63,6 +64,7 @@ function PassengerMap() {
             marker={place ? { lat: place.lat, lng: place.lng } : null}
             focus={place}
             selectedBusId={selectedId}
+            ambulances={ambulances}
             className="h-[24rem] sm:h-[34rem]"
           />
           <div className="absolute left-3 right-3 top-10 z-[1000] rounded-xl bg-background/95 p-2 shadow-panel backdrop-blur">

@@ -16,24 +16,26 @@ export const AMBULANCES: AmbulanceUnit[] = [
   {
     id: "amb-01",
     code: "AMB-01",
-    hospital: "City General Hospital",
+    hospital: "Jayadeva Hospital, Bannerghatta Rd",
+    // Central city → Jayadeva Hospital and back, in continuous rounds.
     waypoints: [
-      { lat: 12.9767, lng: 77.5946 },
-      { lat: 12.9698, lng: 77.6205 },
-      { lat: 12.9542, lng: 77.6100 },
-      { lat: 12.9611, lng: 77.5800 },
+      { lat: 12.9767, lng: 77.5946 }, // central city depot
+      { lat: 12.9400, lng: 77.5950 }, // south along Bannerghatta Rd
+      { lat: 12.9166, lng: 77.5996 }, // Jayadeva Hospital
+      { lat: 12.9400, lng: 77.5950 }, // return leg
     ],
     speedKmh: 48,
   },
   {
     id: "amb-02",
     code: "AMB-02",
-    hospital: "Northside Trauma Centre",
+    hospital: "Manipal Hospital, Kanakpura Rd",
+    // Central city → Manipal Hospital on Kanakpura Rd and back, in rounds.
     waypoints: [
-      { lat: 12.9910, lng: 77.5710 },
-      { lat: 13.0068, lng: 77.5920 },
-      { lat: 12.9950, lng: 77.6150 },
-      { lat: 12.9800, lng: 77.5850 },
+      { lat: 12.9767, lng: 77.5946 }, // central city depot
+      { lat: 12.9350, lng: 77.5760 }, // south-west towards Kanakpura Rd
+      { lat: 12.8847, lng: 77.5835 }, // Manipal Hospital, Kanakpura Rd
+      { lat: 12.9350, lng: 77.5760 }, // return leg
     ],
     speedKmh: 52,
   },

@@ -46,14 +46,14 @@ function Home() {
       <section className="mx-auto max-w-2xl text-center">
         <div>
           <span className="inline-flex items-center gap-2 rounded-full border border-border px-3 py-1 text-xs text-muted-foreground">
-            <span className="h-1.5 w-1.5 rounded-full bg-live" /> Prototype · live vehicle feed
+            <span className="h-1.5 w-1.5 rounded-full bg-live" /> Live vehicle feed
           </span>
           <h1 className="mt-4 font-display text-4xl font-semibold leading-tight sm:text-5xl">
-            See every city bus move, live.
+            See every public transport move, live.
           </h1>
           <p className="mt-4 text-sm text-muted-foreground sm:text-base">
-            BusSync is a Flightradar-style tracker for public buses. Drivers share their device
-            location; passengers watch the fleet crawl across the map in real time.
+            One city map for buses, shuttles, and ambulances. Know exactly where your ride is and
+            when it arrives — no guesswork.
           </p>
           <div className="mt-6 flex flex-wrap justify-center gap-3">
             <Link

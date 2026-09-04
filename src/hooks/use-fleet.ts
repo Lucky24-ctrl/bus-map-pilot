@@ -72,7 +72,11 @@ export function useFleet() {
 
   const data = useMemo<TrackedBus[] | undefined>(() => {
     if (!query.data) return query.data;
-    return query.data.map((item) => {
+    return query.data
+      // Real buses only appear while their driver is broadcasting GPS; the
+      // handful of demo buses stay visible and are animated by the simulation.
+      .filter((item) => item.bus.simulated || isLive(item.location))
+      .map((item) => {
       const path = item.route ? roadPaths?.get(item.route.id) : undefined;
       const tracked: TrackedBus =
         item.route && path && path.length > 1

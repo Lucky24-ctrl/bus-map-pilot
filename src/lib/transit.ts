@@ -27,7 +27,7 @@ export async function fetchRoutes(): Promise<BusRoute[]> {
 export async function fetchBuses(): Promise<Bus[]> {
   const { data, error } = await supabase
     .from("buses")
-    .select("id, bus_number, route_id")
+    .select("id, bus_number, route_id, simulated")
     .order("bus_number");
   if (error) throw error;
   return data ?? [];

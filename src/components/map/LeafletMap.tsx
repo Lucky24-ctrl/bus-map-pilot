@@ -19,6 +19,8 @@ type LeafletMapProps = {
   focus?: (LatLng & { zoom?: number }) | null;
   selectedBusId?: string | null;
   ambulances?: AmbulancePosition[];
+  emergency?: LatLng | null;
+  respondingAmbulanceId?: string | null;
   className?: string;
 };
 
@@ -48,6 +50,22 @@ function ambulanceIcon(): L.DivIcon {
       <span class="ambulance-beacon__core">
         <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true">
           <path fill="#ffffff" d="M9.5 2h5v5.5H20v5h-5.5V18h-5v-5.5H4v-5h5.5z"/>
+        </svg>
+      </span>
+    </span>`,
+  });
+}
+
+function emergencyIcon(): L.DivIcon {
+  return L.divIcon({
+    className: "",
+    iconSize: [34, 34],
+    iconAnchor: [17, 17],
+    html: `<span class="ambulance-beacon">
+      <span class="ambulance-beacon__pulse"></span>
+      <span class="ambulance-beacon__core" style="background:#f59e0b">
+        <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+          <path fill="#0f172a" d="M12 2 1 21h22L12 2zm1 14h-2v2h2v-2zm0-7h-2v5h2V9z"/>
         </svg>
       </span>
     </span>`,
@@ -88,6 +106,8 @@ export default function LeafletMap({
   focus = null,
   selectedBusId = null,
   ambulances = [],
+  emergency = null,
+  respondingAmbulanceId = null,
   className,
 }: LeafletMapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -189,8 +209,23 @@ export default function LeafletMap({
     for (const unit of ambulances) {
       const at: L.LatLngExpression = [unit.lat, unit.lng];
       points.push(at);
+      const responding = respondingAmbulanceId === unit.id;
       L.marker(at, { icon: ambulanceIcon(), zIndexOffset: 1000 })
-        .bindTooltip(`${unit.code} · ${unit.hospital}`)
+        .bindTooltip(responding ? `${unit.code} · responding` : `${unit.code} · ${unit.hospital}`)
+        .addTo(layer);
+      if (responding && emergency) {
+        L.polyline(
+          [at, [emergency.lat, emergency.lng] as L.LatLngExpression],
+          { color: "#ef4444", weight: 3, opacity: 0.85, dashArray: "6 6" },
+        ).addTo(layer);
+      }
+    }
+
+    if (emergency) {
+      const at: L.LatLngExpression = [emergency.lat, emergency.lng];
+      points.push(at);
+      L.marker(at, { icon: emergencyIcon(), zIndexOffset: 1100 })
+        .bindTooltip("Emergency request")
         .addTo(layer);
     }
 
@@ -210,7 +245,7 @@ export default function LeafletMap({
       fittedKeyRef.current = fitKey;
       map.fitBounds(L.latLngBounds(points), { padding: [40, 40], maxZoom: 15 });
     }
-  }, [buses, stops, marker, selectedBusId, ambulances]);
+  }, [buses, stops, marker, selectedBusId, ambulances, emergency, respondingAmbulanceId]);
 
   // Pan/zoom to a searched place whenever the focus target changes.
   useEffect(() => {

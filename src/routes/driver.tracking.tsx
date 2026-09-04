@@ -33,7 +33,7 @@ export const Route = createFileRoute("/driver/tracking")({
 
 function DriverTracking() {
   const { busId } = Route.useSearch();
-  const { data: fleet = [] } = useFleet();
+  const { data: fleet = [] } = useFleet({ includeOffline: true });
   const tracked = fleet.find((item) => item.bus.id === busId) ?? null;
 
   const [broadcasting, setBroadcasting] = useState(false);

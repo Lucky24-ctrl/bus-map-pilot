@@ -27,7 +27,7 @@ export const Route = createFileRoute("/profile")({
 function ProfilePage() {
   const session = useSession();
   const navigate = useNavigate();
-  const { data: fleet = [] } = useFleet();
+  const { data: fleet = [] } = useFleet({ includeOffline: true });
   const bus = fleet.find((item) => item.bus.id === session?.busId) ?? null;
 
   if (!session) {

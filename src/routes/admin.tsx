@@ -30,7 +30,7 @@ export const Route = createFileRoute("/admin")({
 });
 
 function Admin() {
-  const { data: fleet = [], isPending } = useFleet();
+  const { data: fleet = [], isPending } = useFleet({ includeOffline: true });
   const ambulances = useAmbulances();
   const [routeId, setRouteId] = useState<string | null>(null);
 

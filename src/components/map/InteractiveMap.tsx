@@ -19,6 +19,8 @@ type InteractiveMapProps = {
   focus?: (LatLng & { zoom?: number }) | null;
   selectedBusId?: string | null;
   ambulances?: AmbulancePosition[];
+  emergency?: LatLng | null;
+  respondingAmbulanceId?: string | null;
   className?: string;
 };
 
@@ -45,6 +47,8 @@ export function InteractiveMap({
   focus = null,
   selectedBusId = null,
   ambulances = [],
+  emergency = null,
+  respondingAmbulanceId = null,
   className,
 }: InteractiveMapProps) {
   const { data, isPending, error } = useQuery({
@@ -84,6 +88,8 @@ export function InteractiveMap({
               focus={focus}
               selectedBusId={selectedBusId}
               ambulances={ambulances}
+              emergency={emergency}
+              respondingAmbulanceId={respondingAmbulanceId}
             />
           </Suspense>
         </ClientOnly>

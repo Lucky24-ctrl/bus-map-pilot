@@ -75,21 +75,22 @@ export function useFleet() {
     return query.data
       // Real buses only appear while their driver is broadcasting GPS; the
       // handful of demo buses stay visible and are animated by the simulation.
-      .filter((item) => item.bus.simulated || isLive(item.location))
+      .filter((item) => includeOffline || item.bus.simulated || isLive(item.location))
       .map((item) => {
-      const path = item.route ? roadPaths?.get(item.route.id) : undefined;
-      const tracked: TrackedBus =
-        item.route && path && path.length > 1
-          ? { ...item, route: { ...item.route, path } }
-          : item;
-      if (isLive(tracked.location)) return tracked;
-      const simulated = simulateLocation(tracked, now);
-      return simulated ? { ...tracked, location: simulated, simulated: true } : tracked;
-    });
-  }, [query.data, roadPaths, now]);
+        const path = item.route ? roadPaths?.get(item.route.id) : undefined;
+        const tracked: TrackedBus =
+          item.route && path && path.length > 1
+            ? { ...item, route: { ...item.route, path } }
+            : item;
+        if (isLive(tracked.location) || !tracked.bus.simulated) return tracked;
+        const simulated = simulateLocation(tracked, now);
+        return simulated ? { ...tracked, location: simulated, simulated: true } : tracked;
+      });
+  }, [query.data, roadPaths, now, includeOffline]);
 
   return { ...query, data } as typeof query;
 }
+
 
 export function useRoutes() {
   return useQuery({ queryKey: ["routes"], queryFn: fetchRoutes });

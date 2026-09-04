@@ -10,8 +10,13 @@ import type { LatLng, TrackedBus } from "@/lib/types";
 /** How often simulated buses advance along their route, in milliseconds. */
 const SIM_TICK_MS = 1000;
 
-/** Fleet (buses + routes + latest positions) with live updates over Realtime. */
-export function useFleet() {
+/**
+ * Fleet (buses + routes + latest positions) with live updates over Realtime.
+ * By default only buses broadcasting real GPS (plus the demo buses) are
+ * returned; pass `includeOffline` for roster views like admin and driver setup.
+ */
+export function useFleet(options?: { includeOffline?: boolean }) {
+  const includeOffline = options?.includeOffline ?? false;
   const queryClient = useQueryClient();
   const query = useQuery({ queryKey: ["fleet"], queryFn: fetchFleet });
 

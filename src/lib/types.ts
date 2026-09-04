@@ -16,6 +16,8 @@ export type Bus = {
   id: string;
   bus_number: string;
   route_id: string | null;
+  /** Demo bus animated by the built-in simulation (no real driver device). */
+  simulated?: boolean;
 };
 
 export type LiveLocation = {

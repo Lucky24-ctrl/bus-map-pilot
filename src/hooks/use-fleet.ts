@@ -10,8 +10,13 @@ import type { LatLng, TrackedBus } from "@/lib/types";
 /** How often simulated buses advance along their route, in milliseconds. */
 const SIM_TICK_MS = 1000;
 
-/** Fleet (buses + routes + latest positions) with live updates over Realtime. */
-export function useFleet() {
+/**
+ * Fleet (buses + routes + latest positions) with live updates over Realtime.
+ * By default only buses broadcasting real GPS (plus the demo buses) are
+ * returned; pass `includeOffline` for roster views like admin and driver setup.
+ */
+export function useFleet(options?: { includeOffline?: boolean }) {
+  const includeOffline = options?.includeOffline ?? false;
   const queryClient = useQueryClient();
   const query = useQuery({ queryKey: ["fleet"], queryFn: fetchFleet });
 
@@ -72,20 +77,25 @@ export function useFleet() {
 
   const data = useMemo<TrackedBus[] | undefined>(() => {
     if (!query.data) return query.data;
-    return query.data.map((item) => {
-      const path = item.route ? roadPaths?.get(item.route.id) : undefined;
-      const tracked: TrackedBus =
-        item.route && path && path.length > 1
-          ? { ...item, route: { ...item.route, path } }
-          : item;
-      if (isLive(tracked.location)) return tracked;
-      const simulated = simulateLocation(tracked, now);
-      return simulated ? { ...tracked, location: simulated, simulated: true } : tracked;
-    });
-  }, [query.data, roadPaths, now]);
+    return query.data
+      // Real buses only appear while their driver is broadcasting GPS; the
+      // handful of demo buses stay visible and are animated by the simulation.
+      .filter((item) => includeOffline || item.bus.simulated || isLive(item.location))
+      .map((item) => {
+        const path = item.route ? roadPaths?.get(item.route.id) : undefined;
+        const tracked: TrackedBus =
+          item.route && path && path.length > 1
+            ? { ...item, route: { ...item.route, path } }
+            : item;
+        if (isLive(tracked.location) || !tracked.bus.simulated) return tracked;
+        const simulated = simulateLocation(tracked, now);
+        return simulated ? { ...tracked, location: simulated, simulated: true } : tracked;
+      });
+  }, [query.data, roadPaths, now, includeOffline]);
 
   return { ...query, data } as typeof query;
 }
+
 
 export function useRoutes() {
   return useQuery({ queryKey: ["routes"], queryFn: fetchRoutes });

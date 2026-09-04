@@ -20,18 +20,21 @@ export type Database = {
           created_at: string
           id: string
           route_id: string | null
+          simulated: boolean
         }
         Insert: {
           bus_number: string
           created_at?: string
           id?: string
           route_id?: string | null
+          simulated?: boolean
         }
         Update: {
           bus_number?: string
           created_at?: string
           id?: string
           route_id?: string | null
+          simulated?: boolean
         }
         Relationships: [
           {

@@ -55,7 +55,7 @@ type Step = "phone" | "otp" | "role" | "bus";
 
 function LoginPage() {
   const navigate = useNavigate();
-  const { data: fleet = [] } = useFleet();
+  const { data: fleet = [] } = useFleet({ includeOffline: true });
 
   const [step, setStep] = useState<Step>("phone");
   const [phone, setPhone] = useState("");

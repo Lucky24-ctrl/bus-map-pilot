@@ -25,7 +25,7 @@ export const Route = createFileRoute("/driver/")({
 });
 
 function DriverHome() {
-  const { data: fleet = [], isPending } = useFleet();
+  const { data: fleet = [], isPending } = useFleet({ includeOffline: true });
   const [busId, setBusId] = useState<string>("");
   const navigate = useNavigate();
 

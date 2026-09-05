@@ -41,8 +41,10 @@ function PassengerMap() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [place, setPlace] = useState<{ lat: number; lng: number; name: string } | null>(null);
   const [showAllStops, setShowAllStops] = useState(false);
+  const [request, setRequest] = useState<EmergencyRequest | null>(null);
 
   const origin = place ? { lat: place.lat, lng: place.lng } : defaultCenter;
+  const dispatch: Dispatch | null = request ? dispatchNearest(ambulances, request.at) : null;
 
   const stops = useMemo(() => nearbyStops(fleet, origin, 12), [fleet, origin]);
   const options = useMemo(
@@ -68,6 +70,8 @@ function PassengerMap() {
             focus={place}
             selectedBusId={selectedId}
             ambulances={ambulances}
+            emergency={request ? request.at : null}
+            respondingAmbulanceId={dispatch?.ambulance.id ?? null}
             className="h-[24rem] sm:h-[34rem]"
           />
           <div className="absolute left-3 right-3 top-10 z-[1000] rounded-xl bg-background/95 p-2 shadow-panel backdrop-blur">

@@ -7,8 +7,10 @@ import { InteractiveMap } from "@/components/map/InteractiveMap";
 import { useAmbulances } from "@/hooks/use-ambulances";
 import { useFleet } from "@/hooks/use-fleet";
 import { PlaceSearch } from "@/components/map/PlaceSearch";
+import { EmergencyRequestForm } from "@/components/transit/EmergencyRequestForm";
 import { PunctualityBadge } from "@/components/transit/PunctualityBadge";
 import { defaultCenter } from "@/lib/config";
+import { dispatchNearest, type Dispatch, type EmergencyRequest } from "@/lib/emergency";
 import { formatClock, nearbyStops, routeOptionsFor, toMiles } from "@/lib/nearby";
 import { punctuality } from "@/lib/schedule";
 import { isLive } from "@/lib/transit";
@@ -39,8 +41,10 @@ function PassengerMap() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [place, setPlace] = useState<{ lat: number; lng: number; name: string } | null>(null);
   const [showAllStops, setShowAllStops] = useState(false);
+  const [request, setRequest] = useState<EmergencyRequest | null>(null);
 
   const origin = place ? { lat: place.lat, lng: place.lng } : defaultCenter;
+  const dispatch: Dispatch | null = request ? dispatchNearest(ambulances, request.at) : null;
 
   const stops = useMemo(() => nearbyStops(fleet, origin, 12), [fleet, origin]);
   const options = useMemo(
@@ -66,6 +70,8 @@ function PassengerMap() {
             focus={place}
             selectedBusId={selectedId}
             ambulances={ambulances}
+            emergency={request ? request.at : null}
+            respondingAmbulanceId={dispatch?.ambulance.id ?? null}
             className="h-[24rem] sm:h-[34rem]"
           />
           <div className="absolute left-3 right-3 top-10 z-[1000] rounded-xl bg-background/95 p-2 shadow-panel backdrop-blur">
@@ -74,6 +80,14 @@ function PassengerMap() {
         </div>
 
         <div className="flex flex-col gap-3">
+          <EmergencyRequestForm
+            ambulances={ambulances}
+            place={place}
+            request={request}
+            dispatch={dispatch}
+            onSubmit={setRequest}
+            onCancel={() => setRequest(null)}
+          />
           {place ? (
             <section className="panel p-4">
               <div className="flex items-center justify-between gap-2">

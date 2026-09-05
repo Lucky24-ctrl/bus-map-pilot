@@ -120,9 +120,44 @@ function DriverTracking() {
               />
               <Row label="Last sent" value={lastSent ? lastSent.toLocaleTimeString() : "—"} />
             </dl>
+            {coarse ? (
+              <p className="mt-3 rounded-lg bg-destructive/10 px-3 py-2 text-xs text-destructive">
+                Location is approximate right now (coarse network fix). Move to an open area or
+                wait a few seconds for GPS to lock.
+              </p>
+            ) : null}
             {error ? <p className="mt-3 text-xs text-destructive">{error}</p> : null}
             {sendError ? <p className="mt-1 text-xs text-destructive">{sendError}</p> : null}
           </div>
+
+          {tracked?.route ? (
+            <div className="panel p-5">
+              <div className="flex items-center justify-between gap-2">
+                <h2 className="font-display text-sm font-semibold">Route stops &amp; schedule</h2>
+                <PunctualityBadge value={punctuality(tracked)} />
+              </div>
+              <p className="mt-1 text-xs text-muted-foreground">
+                {tracked.route.name} · {tracked.route.stops.length} stops
+              </p>
+              <ol className="mt-3 max-h-64 space-y-2 overflow-y-auto pr-1">
+                {tracked.route.stops.map((stop, index) => (
+                  <li key={`${stop.name}-${index}`} className="flex items-center gap-2.5 text-sm">
+                    {isLive(tracked.location) &&
+                    Math.abs(stop.lat - tracked.location!.latitude) < 0.002 &&
+                    Math.abs(stop.lng - tracked.location!.longitude) < 0.002 ? (
+                      <CircleDot className="h-4 w-4 shrink-0 text-primary" />
+                    ) : (
+                      <MapPin className="h-4 w-4 shrink-0 text-muted-foreground" />
+                    )}
+                    <span className="truncate">
+                      <span className="text-xs text-muted-foreground">{index + 1}. </span>
+                      {stop.name}
+                    </span>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          ) : null}
 
           <p className="text-xs text-muted-foreground">
             Position is sent every {locationPushIntervalMs / 1000} seconds while broadcasting is on.

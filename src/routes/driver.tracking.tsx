@@ -1,12 +1,15 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { CircleDot, MapPin } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import { AppShell } from "@/components/layout/AppShell";
 import { InteractiveMap } from "@/components/map/InteractiveMap";
+import { PunctualityBadge } from "@/components/transit/PunctualityBadge";
 import { useDriverGeolocation } from "@/hooks/use-driver-geolocation";
 import { useFleet } from "@/hooks/use-fleet";
 import { locationPushIntervalMs } from "@/lib/config";
-import { pushLocation } from "@/lib/transit";
+import { punctuality } from "@/lib/schedule";
+import { isLive, pushLocation } from "@/lib/transit";
 
 type TrackingSearch = { busId?: string | undefined };
 
@@ -39,7 +42,7 @@ function DriverTracking() {
   const [broadcasting, setBroadcasting] = useState(false);
   const [lastSent, setLastSent] = useState<Date | null>(null);
   const [sendError, setSendError] = useState<string | null>(null);
-  const { position, error } = useDriverGeolocation(broadcasting);
+  const { position, error, coarse } = useDriverGeolocation(broadcasting);
   const positionRef = useRef(position);
   positionRef.current = position;
 

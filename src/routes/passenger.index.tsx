@@ -80,6 +80,14 @@ function PassengerMap() {
         </div>
 
         <div className="flex flex-col gap-3">
+          <EmergencyRequestForm
+            ambulances={ambulances}
+            place={place}
+            request={request}
+            dispatch={dispatch}
+            onSubmit={setRequest}
+            onCancel={() => setRequest(null)}
+          />
           {place ? (
             <section className="panel p-4">
               <div className="flex items-center justify-between gap-2">

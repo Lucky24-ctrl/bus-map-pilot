@@ -1,9 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Siren } from "lucide-react";
 import { useState } from "react";
 
 import { AppShell } from "@/components/layout/AppShell";
 import { InteractiveMap } from "@/components/map/InteractiveMap";
+import { useActiveEmergency } from "@/hooks/use-active-emergency";
 import { useAmbulances } from "@/hooks/use-ambulances";
+import { useEmergencyResponse } from "@/hooks/use-emergency-response";
 import { RouteCard } from "@/components/transit/RouteCard";
 import { LiveBadge } from "@/components/transit/LiveBadge";
 import { PunctualityBadge } from "@/components/transit/PunctualityBadge";
@@ -31,7 +34,9 @@ export const Route = createFileRoute("/admin")({
 
 function Admin() {
   const { data: fleet = [], isPending } = useFleet({ includeOffline: true });
-  const ambulances = useAmbulances();
+  const liveAmbulances = useAmbulances();
+  const [emergency] = useActiveEmergency();
+  const { ambulances, dispatch, arrived } = useEmergencyResponse(liveAmbulances, emergency);
   const [routeId, setRouteId] = useState<string | null>(null);
 
   const routes = [...new Map(fleet.flatMap((t) => (t.route ? [[t.route.id, t.route]] : []))).values()];

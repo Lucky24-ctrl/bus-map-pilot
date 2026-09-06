@@ -91,6 +91,7 @@ function DriverTracking() {
           buses={tracked ? [tracked] : []}
           stops={tracked?.route?.stops ?? []}
           marker={position ? { lat: position.latitude, lng: position.longitude } : null}
+          markerAccuracy={position?.accuracy ?? null}
           className="h-[20rem] sm:h-[28rem]"
         />
 

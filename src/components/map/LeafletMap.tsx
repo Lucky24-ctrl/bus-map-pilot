@@ -16,6 +16,8 @@ type LeafletMapProps = {
   buses?: TrackedBus[];
   stops?: Stop[];
   marker?: LatLng | null;
+  /** Accuracy radius (metres) drawn around `marker`, for driver GPS. */
+  markerAccuracy?: number | null;
   focus?: (LatLng & { zoom?: number }) | null;
   selectedBusId?: string | null;
   ambulances?: AmbulancePosition[];
@@ -103,6 +105,7 @@ export default function LeafletMap({
   buses = [],
   stops = [],
   marker = null,
+  markerAccuracy = null,
   focus = null,
   selectedBusId = null,
   ambulances = [],
@@ -233,6 +236,15 @@ export default function LeafletMap({
       const at: L.LatLngExpression = [marker.lat, marker.lng];
       points.push(at);
       L.marker(at, { icon: pinIcon() }).addTo(layer);
+      if (markerAccuracy && markerAccuracy > 0) {
+        L.circle(at, {
+          radius: markerAccuracy,
+          color: "#38bdf8",
+          weight: 1,
+          fillColor: "#38bdf8",
+          fillOpacity: 0.12,
+        }).addTo(layer);
+      }
     }
 
     // Fit the view to the data only when the set of tracked buses changes,
@@ -245,7 +257,7 @@ export default function LeafletMap({
       fittedKeyRef.current = fitKey;
       map.fitBounds(L.latLngBounds(points), { padding: [40, 40], maxZoom: 15 });
     }
-  }, [buses, stops, marker, selectedBusId, ambulances, emergency, respondingAmbulanceId]);
+  }, [buses, stops, marker, markerAccuracy, selectedBusId, ambulances, emergency, respondingAmbulanceId]);
 
   // Pan/zoom to a searched place whenever the focus target changes.
   useEffect(() => {

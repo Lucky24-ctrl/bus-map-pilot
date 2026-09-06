@@ -137,3 +137,53 @@ export function nextStopEta(tracked: TrackedBus, now = Date.now()): NextStopEta 
   const minutes = Math.max(1, Math.round((km / speed) * 60));
   return { stopName: target.name, km, minutes, arrival: new Date(now + minutes * 60_000) };
 }
+
+/** Open (non-looping) path with cumulative distances. */
+export function buildPath(points: LatLng[]): PathPoint[] {
+  if (points.length < 2) return [];
+  const out: PathPoint[] = [];
+  let total = 0;
+  points.forEach((point, index) => {
+    if (index > 0) {
+      const previous = points[index - 1]!;
+      total += distanceKm(previous, point);
+    }
+    out.push({ lat: point.lat, lng: point.lng, cumulativeKm: total });
+  });
+  return out;
+}
+
+export function pathLengthKm(path: PathPoint[]): number {
+  return path.length > 0 ? path[path.length - 1]!.cumulativeKm : 0;
+}
+
+/** Position along an open path, clamped at both ends (no wrap-around). */
+export function pointAlong(
+  path: PathPoint[],
+  travelledKm: number,
+): { at: LatLng; heading: number; done: boolean } | null {
+  const total = pathLengthKm(path);
+  if (path.length < 2 || total <= 0) return null;
+  if (travelledKm >= total) {
+    const last = path[path.length - 1]!;
+    return { at: { lat: last.lat, lng: last.lng }, heading: bearing(path[path.length - 2]!, last), done: true };
+  }
+  const distance = Math.max(0, travelledKm);
+  for (let i = 1; i < path.length; i += 1) {
+    const previous = path[i - 1]!;
+    const current = path[i]!;
+    if (distance <= current.cumulativeKm) {
+      const span = current.cumulativeKm - previous.cumulativeKm || 1;
+      const ratio = Math.min(1, Math.max(0, (distance - previous.cumulativeKm) / span));
+      return {
+        at: {
+          lat: previous.lat + (current.lat - previous.lat) * ratio,
+          lng: previous.lng + (current.lng - previous.lng) * ratio,
+        },
+        heading: bearing(previous, current),
+        done: false,
+      };
+    }
+  }
+  return null;
+}

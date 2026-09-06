@@ -11,6 +11,7 @@ import { RouteCard } from "@/components/transit/RouteCard";
 import { LiveBadge } from "@/components/transit/LiveBadge";
 import { PunctualityBadge } from "@/components/transit/PunctualityBadge";
 import { useFleet } from "@/hooks/use-fleet";
+import { dispatchNearest } from "@/lib/emergency";
 import { punctuality } from "@/lib/schedule";
 import { formatAgo, formatSpeed, isLive } from "@/lib/transit";
 
@@ -37,6 +38,10 @@ function Admin() {
   const liveAmbulances = useAmbulances();
   const [emergency] = useActiveEmergency();
   const { ambulances, dispatch, arrived } = useEmergencyResponse(liveAmbulances, emergency);
+  // The dispatched unit mirrors the passenger page's nearest-ambulance pick.
+  const busyId = emergency
+    ? (dispatch?.ambulance.id ?? dispatchNearest(liveAmbulances, emergency.at)?.ambulance.id ?? null)
+    : null;
   const [routeId, setRouteId] = useState<string | null>(null);
 
   const routes = [...new Map(fleet.flatMap((t) => (t.route ? [[t.route.id, t.route]] : []))).values()];

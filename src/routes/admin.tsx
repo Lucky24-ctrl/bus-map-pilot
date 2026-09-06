@@ -74,6 +74,8 @@ function Admin() {
             }
             stops={selectedRoute?.stops ?? []}
             ambulances={ambulances}
+            emergency={emergency?.at ?? null}
+            respondingAmbulanceId={busyId}
             className="h-64 sm:h-80"
           />
 
@@ -108,6 +110,68 @@ function Admin() {
                     </td>
                   </tr>
                 ))}
+              </tbody>
+            </table>
+          </div>
+
+          <div className="panel overflow-x-auto">
+            <div className="flex items-center gap-2 px-4 pt-4">
+              <Siren className="h-4 w-4 text-destructive" />
+              <h2 className="font-display text-base font-semibold">Ambulances</h2>
+              <span className="ml-auto text-xs text-muted-foreground">
+                {ambulances.length - (busyId ? 1 : 0)} free · {busyId ? 1 : 0} busy
+              </span>
+            </div>
+            <table className="mt-3 w-full min-w-[32rem] text-left text-sm">
+              <thead className="text-[11px] uppercase tracking-wider text-muted-foreground">
+                <tr className="border-y border-border">
+                  <th className="px-4 py-3">Unit</th>
+                  <th className="px-4 py-3">Base hospital</th>
+                  <th className="px-4 py-3">Speed</th>
+                  <th className="px-4 py-3">Status</th>
+                  <th className="px-4 py-3">Assignment</th>
+                </tr>
+              </thead>
+              <tbody>
+                {ambulances.map((unit) => {
+                  const busy = unit.id === busyId;
+                  return (
+                    <tr key={unit.id} className="border-b border-border last:border-0">
+                      <td className="px-4 py-3 font-medium">{unit.code}</td>
+                      <td className="px-4 py-3 text-muted-foreground">{unit.hospital}</td>
+                      <td className="px-4 py-3">{Math.round(unit.speedKmh)} km/h</td>
+                      <td className="px-4 py-3">
+                        <span
+                          className={
+                            busy
+                              ? "inline-flex items-center gap-1.5 rounded-full bg-destructive/15 px-2.5 py-1 text-xs font-medium text-destructive"
+                              : "inline-flex items-center gap-1.5 rounded-full bg-emerald-500/15 px-2.5 py-1 text-xs font-medium text-emerald-500"
+                          }
+                        >
+                          <span
+                            className={
+                              busy
+                                ? "h-1.5 w-1.5 rounded-full bg-destructive"
+                                : "h-1.5 w-1.5 rounded-full bg-emerald-500"
+                            }
+                          />
+                          {busy ? "Busy — responding" : "Free"}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 text-muted-foreground">
+                        {busy && emergency
+                          ? `${emergency.placeName} · ${
+                              arrived
+                                ? "arrived"
+                                : dispatch
+                                  ? `${dispatch.etaMinutes} min ETA`
+                                  : "en route"
+                            }`
+                          : "On patrol"}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>

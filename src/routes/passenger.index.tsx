@@ -5,12 +5,13 @@ import { useMemo, useState } from "react";
 import { AppShell } from "@/components/layout/AppShell";
 import { InteractiveMap } from "@/components/map/InteractiveMap";
 import { useAmbulances } from "@/hooks/use-ambulances";
+import { useEmergencyResponse } from "@/hooks/use-emergency-response";
 import { useFleet } from "@/hooks/use-fleet";
 import { PlaceSearch } from "@/components/map/PlaceSearch";
 import { EmergencyRequestForm } from "@/components/transit/EmergencyRequestForm";
 import { PunctualityBadge } from "@/components/transit/PunctualityBadge";
 import { defaultCenter } from "@/lib/config";
-import { dispatchNearest, type Dispatch, type EmergencyRequest } from "@/lib/emergency";
+import { type EmergencyRequest } from "@/lib/emergency";
 import { formatClock, nearbyStops, routeOptionsFor, toMiles } from "@/lib/nearby";
 import { punctuality } from "@/lib/schedule";
 import { isLive } from "@/lib/transit";
@@ -37,14 +38,14 @@ export const Route = createFileRoute("/passenger/")({
 
 function PassengerMap() {
   const { data: fleet = [], isPending, error } = useFleet();
-  const ambulances = useAmbulances();
+  const liveAmbulances = useAmbulances();
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [place, setPlace] = useState<{ lat: number; lng: number; name: string } | null>(null);
   const [showAllStops, setShowAllStops] = useState(false);
   const [request, setRequest] = useState<EmergencyRequest | null>(null);
 
   const origin = place ? { lat: place.lat, lng: place.lng } : defaultCenter;
-  const dispatch: Dispatch | null = request ? dispatchNearest(ambulances, request.at) : null;
+  const { ambulances, dispatch } = useEmergencyResponse(liveAmbulances, request);
 
   const stops = useMemo(() => nearbyStops(fleet, origin, 12), [fleet, origin]);
   const options = useMemo(

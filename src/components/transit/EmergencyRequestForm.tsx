@@ -88,7 +88,9 @@ export function EmergencyRequestForm({
             </div>
             <div className="flex justify-between gap-3">
               <dt className="text-muted-foreground">ETA</dt>
-              <dd className="font-display text-base font-semibold">{dispatch.etaMinutes} min</dd>
+              <dd className="font-display text-base font-semibold">
+                {dispatch.etaMinutes === 0 ? "Arrived" : `${dispatch.etaMinutes} min`}
+              </dd>
             </div>
           </dl>
         ) : (

@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 
 import { AppShell } from "@/components/layout/AppShell";
 import { InteractiveMap } from "@/components/map/InteractiveMap";
+import { useActiveEmergency } from "@/hooks/use-active-emergency";
 import { useAmbulances } from "@/hooks/use-ambulances";
 import { useEmergencyResponse } from "@/hooks/use-emergency-response";
 import { useFleet } from "@/hooks/use-fleet";
@@ -42,7 +43,7 @@ function PassengerMap() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [place, setPlace] = useState<{ lat: number; lng: number; name: string } | null>(null);
   const [showAllStops, setShowAllStops] = useState(false);
-  const [request, setRequest] = useState<EmergencyRequest | null>(null);
+  const [request, setRequest] = useActiveEmergency();
 
   const origin = place ? { lat: place.lat, lng: place.lng } : defaultCenter;
   const { ambulances, dispatch } = useEmergencyResponse(liveAmbulances, request);

@@ -1,13 +1,17 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Siren } from "lucide-react";
 import { useState } from "react";
 
 import { AppShell } from "@/components/layout/AppShell";
 import { InteractiveMap } from "@/components/map/InteractiveMap";
+import { useActiveEmergency } from "@/hooks/use-active-emergency";
 import { useAmbulances } from "@/hooks/use-ambulances";
+import { useEmergencyResponse } from "@/hooks/use-emergency-response";
 import { RouteCard } from "@/components/transit/RouteCard";
 import { LiveBadge } from "@/components/transit/LiveBadge";
 import { PunctualityBadge } from "@/components/transit/PunctualityBadge";
 import { useFleet } from "@/hooks/use-fleet";
+import { dispatchNearest } from "@/lib/emergency";
 import { punctuality } from "@/lib/schedule";
 import { formatAgo, formatSpeed, isLive } from "@/lib/transit";
 
@@ -31,7 +35,13 @@ export const Route = createFileRoute("/admin")({
 
 function Admin() {
   const { data: fleet = [], isPending } = useFleet({ includeOffline: true });
-  const ambulances = useAmbulances();
+  const liveAmbulances = useAmbulances();
+  const [emergency] = useActiveEmergency();
+  const { ambulances, dispatch, arrived } = useEmergencyResponse(liveAmbulances, emergency);
+  // The dispatched unit mirrors the passenger page's nearest-ambulance pick.
+  const busyId = emergency
+    ? (dispatch?.ambulance.id ?? dispatchNearest(liveAmbulances, emergency.at)?.ambulance.id ?? null)
+    : null;
   const [routeId, setRouteId] = useState<string | null>(null);
 
   const routes = [...new Map(fleet.flatMap((t) => (t.route ? [[t.route.id, t.route]] : []))).values()];
@@ -69,6 +79,8 @@ function Admin() {
             }
             stops={selectedRoute?.stops ?? []}
             ambulances={ambulances}
+            emergency={emergency?.at ?? null}
+            respondingAmbulanceId={busyId}
             className="h-64 sm:h-80"
           />
 
@@ -103,6 +115,68 @@ function Admin() {
                     </td>
                   </tr>
                 ))}
+              </tbody>
+            </table>
+          </div>
+
+          <div className="panel overflow-x-auto">
+            <div className="flex items-center gap-2 px-4 pt-4">
+              <Siren className="h-4 w-4 text-destructive" />
+              <h2 className="font-display text-base font-semibold">Ambulances</h2>
+              <span className="ml-auto text-xs text-muted-foreground">
+                {ambulances.length - (busyId ? 1 : 0)} free · {busyId ? 1 : 0} busy
+              </span>
+            </div>
+            <table className="mt-3 w-full min-w-[32rem] text-left text-sm">
+              <thead className="text-[11px] uppercase tracking-wider text-muted-foreground">
+                <tr className="border-y border-border">
+                  <th className="px-4 py-3">Unit</th>
+                  <th className="px-4 py-3">Base hospital</th>
+                  <th className="px-4 py-3">Speed</th>
+                  <th className="px-4 py-3">Status</th>
+                  <th className="px-4 py-3">Assignment</th>
+                </tr>
+              </thead>
+              <tbody>
+                {ambulances.map((unit) => {
+                  const busy = unit.id === busyId;
+                  return (
+                    <tr key={unit.id} className="border-b border-border last:border-0">
+                      <td className="px-4 py-3 font-medium">{unit.code}</td>
+                      <td className="px-4 py-3 text-muted-foreground">{unit.hospital}</td>
+                      <td className="px-4 py-3">{Math.round(unit.speedKmh)} km/h</td>
+                      <td className="px-4 py-3">
+                        <span
+                          className={
+                            busy
+                              ? "inline-flex items-center gap-1.5 rounded-full bg-destructive/15 px-2.5 py-1 text-xs font-medium text-destructive"
+                              : "inline-flex items-center gap-1.5 rounded-full bg-emerald-500/15 px-2.5 py-1 text-xs font-medium text-emerald-500"
+                          }
+                        >
+                          <span
+                            className={
+                              busy
+                                ? "h-1.5 w-1.5 rounded-full bg-destructive"
+                                : "h-1.5 w-1.5 rounded-full bg-emerald-500"
+                            }
+                          />
+                          {busy ? "Busy — responding" : "Free"}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 text-muted-foreground">
+                        {busy && emergency
+                          ? `${emergency.placeName} · ${
+                              arrived
+                                ? "arrived"
+                                : dispatch
+                                  ? `${dispatch.etaMinutes} min ETA`
+                                  : "en route"
+                            }`
+                          : "On patrol"}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>

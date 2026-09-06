@@ -16,6 +16,7 @@ type InteractiveMapProps = {
   buses?: TrackedBus[];
   stops?: Stop[];
   marker?: LatLng | null;
+  markerAccuracy?: number | null;
   focus?: (LatLng & { zoom?: number }) | null;
   selectedBusId?: string | null;
   ambulances?: AmbulancePosition[];
@@ -44,6 +45,7 @@ export function InteractiveMap({
   buses = [],
   stops = [],
   marker = null,
+  markerAccuracy = null,
   focus = null,
   selectedBusId = null,
   ambulances = [],
@@ -85,6 +87,7 @@ export function InteractiveMap({
               buses={buses}
               stops={stops}
               marker={marker}
+              markerAccuracy={markerAccuracy}
               focus={focus}
               selectedBusId={selectedBusId}
               ambulances={ambulances}

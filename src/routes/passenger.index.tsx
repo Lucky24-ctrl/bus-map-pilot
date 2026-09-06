@@ -12,7 +12,7 @@ import { PlaceSearch } from "@/components/map/PlaceSearch";
 import { EmergencyRequestForm } from "@/components/transit/EmergencyRequestForm";
 import { PunctualityBadge } from "@/components/transit/PunctualityBadge";
 import { defaultCenter } from "@/lib/config";
-import { type EmergencyRequest } from "@/lib/emergency";
+
 import { formatClock, nearbyStops, routeOptionsFor, toMiles } from "@/lib/nearby";
 import { punctuality } from "@/lib/schedule";
 import { isLive } from "@/lib/transit";

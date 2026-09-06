@@ -11,6 +11,10 @@ export type DriverPosition = {
 
 /** Readings worse than this (in metres) are treated as coarse network fixes. */
 const COARSE_ACCURACY_M = 100;
+/** First fix must be at least this accurate, otherwise we wait for a better one. */
+const FIRST_FIX_ACCURACY_M = 60;
+/** A jump faster than this (m/s) between fixes is a GPS glitch — drop it. */
+const MAX_PLAUSIBLE_MPS = 55;
 /** How long a good fix stays trusted before a coarse reading may replace it. */
 const GOOD_FIX_TTL_MS = 20_000;
 
@@ -58,6 +62,23 @@ export function useDriverGeolocation(active: boolean) {
 
       const accuracy = next.accuracy ?? Number.POSITIVE_INFINITY;
       const previous = lastGood.current;
+
+      // Ignore the very first fix while it is still a rough network estimate —
+      // GPS usually sharpens within a few seconds.
+      if (!previous && accuracy > FIRST_FIX_ACCURACY_M) return;
+
+      // Drop impossible teleports (GPS glitches) faster than a moving bus.
+      if (previous) {
+        const dLat = next.latitude - previous.latitude;
+        const dLng =
+          (next.longitude - previous.longitude) * Math.cos((next.latitude * Math.PI) / 180);
+        const metres = Math.hypot(dLat, dLng) * 111_320;
+        const seconds = Math.max(1, (next.timestamp - previous.timestamp) / 1000);
+        if (metres / seconds > MAX_PLAUSIBLE_MPS && metres > accuracy + (previous.accuracy ?? 0)) {
+          return;
+        }
+      }
+
       const previousIsFresh =
         previous != null && next.timestamp - previous.timestamp < GOOD_FIX_TTL_MS;
 

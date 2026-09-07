@@ -6,16 +6,16 @@ import { AppShell } from "@/components/layout/AppShell";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "BusSync — Real-time city bus tracking" },
+      { title: "BUSSYNC — Real-time public transport tracking" },
       {
         name: "description",
         content:
-          "Track city buses live on a map. Passengers see buses move in real time; drivers share their position with one tap.",
+          "Track buses, shuttles, and ambulances live on one map. Passengers see vehicles move in real time; drivers share their position with one tap.",
       },
-      { property: "og:title", content: "BusSync — Real-time city bus tracking" },
+      { property: "og:title", content: "BUSSYNC — Real-time public transport tracking" },
       {
         property: "og:description",
-        content: "Flightradar-style live tracking for city buses, powered by realtime GPS pings.",
+        content: "Live, road-snapped tracking for city buses and emergency vehicles — powered by realtime GPS pings.",
       },
     ],
   }),
@@ -46,14 +46,14 @@ function Home() {
       <section className="mx-auto max-w-2xl text-center">
         <div>
           <span className="inline-flex items-center gap-2 rounded-full border border-border px-3 py-1 text-xs text-muted-foreground">
-            <span className="h-1.5 w-1.5 rounded-full bg-live" /> Prototype · live vehicle feed
+            <span className="h-1.5 w-1.5 rounded-full bg-live" /> Live vehicle feed
           </span>
           <h1 className="mt-4 font-display text-4xl font-semibold leading-tight sm:text-5xl">
-            See every city bus move, live.
+            See every public transport move, live.
           </h1>
           <p className="mt-4 text-sm text-muted-foreground sm:text-base">
-            BusSync is a Flightradar-style tracker for public buses. Drivers share their device
-            location; passengers watch the fleet crawl across the map in real time.
+            One city map for buses, shuttles, and ambulances. Know exactly where your ride is and
+            when it arrives — no guesswork.
           </p>
           <div className="mt-6 flex flex-wrap justify-center gap-3">
             <Link

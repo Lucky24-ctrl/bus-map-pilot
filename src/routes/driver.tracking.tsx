@@ -1,12 +1,15 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { CircleDot, MapPin } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import { AppShell } from "@/components/layout/AppShell";
 import { InteractiveMap } from "@/components/map/InteractiveMap";
+import { PunctualityBadge } from "@/components/transit/PunctualityBadge";
 import { useDriverGeolocation } from "@/hooks/use-driver-geolocation";
 import { useFleet } from "@/hooks/use-fleet";
 import { locationPushIntervalMs } from "@/lib/config";
-import { pushLocation } from "@/lib/transit";
+import { punctuality } from "@/lib/schedule";
+import { isLive, pushLocation } from "@/lib/transit";
 
 type TrackingSearch = { busId?: string | undefined };
 
@@ -33,13 +36,13 @@ export const Route = createFileRoute("/driver/tracking")({
 
 function DriverTracking() {
   const { busId } = Route.useSearch();
-  const { data: fleet = [] } = useFleet();
+  const { data: fleet = [] } = useFleet({ includeOffline: true });
   const tracked = fleet.find((item) => item.bus.id === busId) ?? null;
 
   const [broadcasting, setBroadcasting] = useState(false);
   const [lastSent, setLastSent] = useState<Date | null>(null);
   const [sendError, setSendError] = useState<string | null>(null);
-  const { position, error } = useDriverGeolocation(broadcasting);
+  const { position, error, coarse } = useDriverGeolocation(broadcasting);
   const positionRef = useRef(position);
   positionRef.current = position;
 
@@ -88,6 +91,7 @@ function DriverTracking() {
           buses={tracked ? [tracked] : []}
           stops={tracked?.route?.stops ?? []}
           marker={position ? { lat: position.latitude, lng: position.longitude } : null}
+          markerAccuracy={position?.accuracy ?? null}
           className="h-[20rem] sm:h-[28rem]"
         />
 
@@ -117,9 +121,44 @@ function DriverTracking() {
               />
               <Row label="Last sent" value={lastSent ? lastSent.toLocaleTimeString() : "—"} />
             </dl>
+            {coarse ? (
+              <p className="mt-3 rounded-lg bg-destructive/10 px-3 py-2 text-xs text-destructive">
+                Location is approximate right now (coarse network fix). Move to an open area or
+                wait a few seconds for GPS to lock.
+              </p>
+            ) : null}
             {error ? <p className="mt-3 text-xs text-destructive">{error}</p> : null}
             {sendError ? <p className="mt-1 text-xs text-destructive">{sendError}</p> : null}
           </div>
+
+          {tracked?.route ? (
+            <div className="panel p-5">
+              <div className="flex items-center justify-between gap-2">
+                <h2 className="font-display text-sm font-semibold">Route stops &amp; schedule</h2>
+                <PunctualityBadge value={punctuality(tracked)} />
+              </div>
+              <p className="mt-1 text-xs text-muted-foreground">
+                {tracked.route.name} · {tracked.route.stops.length} stops
+              </p>
+              <ol className="mt-3 max-h-64 space-y-2 overflow-y-auto pr-1">
+                {tracked.route.stops.map((stop, index) => (
+                  <li key={`${stop.name}-${index}`} className="flex items-center gap-2.5 text-sm">
+                    {isLive(tracked.location) &&
+                    Math.abs(stop.lat - tracked.location!.latitude) < 0.002 &&
+                    Math.abs(stop.lng - tracked.location!.longitude) < 0.002 ? (
+                      <CircleDot className="h-4 w-4 shrink-0 text-primary" />
+                    ) : (
+                      <MapPin className="h-4 w-4 shrink-0 text-muted-foreground" />
+                    )}
+                    <span className="truncate">
+                      <span className="text-xs text-muted-foreground">{index + 1}. </span>
+                      {stop.name}
+                    </span>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          ) : null}
 
           <p className="text-xs text-muted-foreground">
             Position is sent every {locationPushIntervalMs / 1000} seconds while broadcasting is on.

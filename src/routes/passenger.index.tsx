@@ -4,10 +4,15 @@ import { useMemo, useState } from "react";
 
 import { AppShell } from "@/components/layout/AppShell";
 import { InteractiveMap } from "@/components/map/InteractiveMap";
+import { useActiveEmergency } from "@/hooks/use-active-emergency";
+import { useAmbulances } from "@/hooks/use-ambulances";
+import { useEmergencyResponse } from "@/hooks/use-emergency-response";
 import { useFleet } from "@/hooks/use-fleet";
 import { PlaceSearch } from "@/components/map/PlaceSearch";
+import { EmergencyRequestForm } from "@/components/transit/EmergencyRequestForm";
 import { PunctualityBadge } from "@/components/transit/PunctualityBadge";
 import { defaultCenter } from "@/lib/config";
+
 import { formatClock, nearbyStops, routeOptionsFor, toMiles } from "@/lib/nearby";
 import { punctuality } from "@/lib/schedule";
 import { isLive } from "@/lib/transit";
@@ -34,11 +39,14 @@ export const Route = createFileRoute("/passenger/")({
 
 function PassengerMap() {
   const { data: fleet = [], isPending, error } = useFleet();
+  const liveAmbulances = useAmbulances();
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [place, setPlace] = useState<{ lat: number; lng: number; name: string } | null>(null);
   const [showAllStops, setShowAllStops] = useState(false);
+  const [request, setRequest] = useActiveEmergency();
 
   const origin = place ? { lat: place.lat, lng: place.lng } : defaultCenter;
+  const { ambulances, dispatch } = useEmergencyResponse(liveAmbulances, request);
 
   const stops = useMemo(() => nearbyStops(fleet, origin, 12), [fleet, origin]);
   const options = useMemo(
@@ -63,6 +71,9 @@ function PassengerMap() {
             marker={place ? { lat: place.lat, lng: place.lng } : null}
             focus={place}
             selectedBusId={selectedId}
+            ambulances={ambulances}
+            emergency={request ? request.at : null}
+            respondingAmbulanceId={dispatch?.ambulance.id ?? null}
             className="h-[24rem] sm:h-[34rem]"
           />
           <div className="absolute left-3 right-3 top-10 z-[1000] rounded-xl bg-background/95 p-2 shadow-panel backdrop-blur">
@@ -71,6 +82,14 @@ function PassengerMap() {
         </div>
 
         <div className="flex flex-col gap-3">
+          <EmergencyRequestForm
+            ambulances={ambulances}
+            place={place}
+            request={request}
+            dispatch={dispatch}
+            onSubmit={setRequest}
+            onCancel={() => setRequest(null)}
+          />
           {place ? (
             <section className="panel p-4">
               <div className="flex items-center justify-between gap-2">

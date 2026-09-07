@@ -1,5 +1,5 @@
 import { distanceKm } from "./nearby";
-import type { LatLng, LiveLocation, Stop, TrackedBus } from "./types";
+import type { LatLng, LiveLocation, TrackedBus } from "./types";
 
 /** Average simulated cruising speed, km/h. */
 export const SIM_SPEED_KMH = 26;
@@ -10,7 +10,7 @@ type PathPoint = LatLng & { cumulativeKm: number };
  * Builds a closed loop through every stop of a route (last stop back to the
  * first) with cumulative distances, so a bus can be animated around it.
  */
-export function buildLoop(stops: Stop[]): PathPoint[] {
+export function buildLoop(stops: LatLng[]): PathPoint[] {
   if (stops.length < 2) return [];
   const ordered = [...stops, stops[0]!];
   const points: PathPoint[] = [];
@@ -75,7 +75,10 @@ function offsetFor(id: string): number {
  * shows realistic movement whenever no real driver device is reporting.
  */
 export function simulateLocation(tracked: TrackedBus, now: number): LiveLocation | null {
-  const stops = tracked.route?.stops ?? [];
+  // Prefer the road-following path so buses drive along streets, not across
+  // lakes and buildings; fall back to straight stop-to-stop lines.
+  const road = tracked.route?.path ?? [];
+  const stops: LatLng[] = road.length > 1 ? road : (tracked.route?.stops ?? []);
   const loop = buildLoop(stops);
   const total = loopLengthKm(loop);
   if (total <= 0) return null;
@@ -133,4 +136,54 @@ export function nextStopEta(tracked: TrackedBus, now = Date.now()): NextStopEta 
   const speed = location.speed && location.speed > 3 ? location.speed : SIM_SPEED_KMH;
   const minutes = Math.max(1, Math.round((km / speed) * 60));
   return { stopName: target.name, km, minutes, arrival: new Date(now + minutes * 60_000) };
+}
+
+/** Open (non-looping) path with cumulative distances. */
+export function buildPath(points: LatLng[]): PathPoint[] {
+  if (points.length < 2) return [];
+  const out: PathPoint[] = [];
+  let total = 0;
+  points.forEach((point, index) => {
+    if (index > 0) {
+      const previous = points[index - 1]!;
+      total += distanceKm(previous, point);
+    }
+    out.push({ lat: point.lat, lng: point.lng, cumulativeKm: total });
+  });
+  return out;
+}
+
+export function pathLengthKm(path: PathPoint[]): number {
+  return path.length > 0 ? path[path.length - 1]!.cumulativeKm : 0;
+}
+
+/** Position along an open path, clamped at both ends (no wrap-around). */
+export function pointAlong(
+  path: PathPoint[],
+  travelledKm: number,
+): { at: LatLng; heading: number; done: boolean } | null {
+  const total = pathLengthKm(path);
+  if (path.length < 2 || total <= 0) return null;
+  if (travelledKm >= total) {
+    const last = path[path.length - 1]!;
+    return { at: { lat: last.lat, lng: last.lng }, heading: bearing(path[path.length - 2]!, last), done: true };
+  }
+  const distance = Math.max(0, travelledKm);
+  for (let i = 1; i < path.length; i += 1) {
+    const previous = path[i - 1]!;
+    const current = path[i]!;
+    if (distance <= current.cumulativeKm) {
+      const span = current.cumulativeKm - previous.cumulativeKm || 1;
+      const ratio = Math.min(1, Math.max(0, (distance - previous.cumulativeKm) / span));
+      return {
+        at: {
+          lat: previous.lat + (current.lat - previous.lat) * ratio,
+          lng: previous.lng + (current.lng - previous.lng) * ratio,
+        },
+        heading: bearing(previous, current),
+        done: false,
+      };
+    }
+  }
+  return null;
 }

@@ -34,3 +34,38 @@ export function punctuality(tracked: TrackedBus, now = Date.now()): Punctuality 
   }
   return { minutes, status: "on-time", label: "On time" };
 }
+
+export type ScheduledStop = {
+  name: string;
+  lat: number;
+  lng: number;
+  /** Scheduled arrival time at this stop for the current run. */
+  time: Date;
+  index: number;
+};
+
+/** Average running time between two consecutive stops, in minutes. */
+const MINUTES_PER_STOP = 6;
+
+/**
+ * Timetable for the current run of a route: the first stop departs at the top
+ * of the most recent half hour and each following stop is spaced evenly.
+ */
+export function routeSchedule(
+  stops: { name: string; lat: number; lng: number }[],
+  now = Date.now(),
+): ScheduledStop[] {
+  const half = 30 * 60_000;
+  const start = Math.floor(now / half) * half;
+  return stops.map((stop, index) => ({
+    ...stop,
+    index,
+    time: new Date(start + index * MINUTES_PER_STOP * 60_000),
+  }));
+}
+
+/** Index of the next stop still ahead of the vehicle on the current run. */
+export function nextStopIndex(schedule: ScheduledStop[], now = Date.now()): number {
+  const found = schedule.findIndex((entry) => entry.time.getTime() >= now);
+  return found === -1 ? schedule.length - 1 : found;
+}

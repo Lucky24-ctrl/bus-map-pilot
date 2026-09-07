@@ -12,12 +12,14 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as DriverIndexRouteImport } from './routes/driver.index'
 import { Route as DriverTrackingRouteImport } from './routes/driver.tracking'
 import { Route as PassengerIndexRouteImport } from './routes/passenger.index'
 import { Route as ApiPublicGeoapifyHealthRouteImport } from './routes/api/public/geoapify-health'
 import { Route as ApiPublicGeocodeRouteImport } from './routes/api/public/geocode'
 import { Route as ApiPublicReverseGeocodeRouteImport } from './routes/api/public/reverse-geocode'
+import { Route as ApiPublicRoutePathRouteImport } from './routes/api/public/route-path'
 import { Route as PassengerBusIdRouteImport } from './routes/passenger.bus.$id'
 
 const IndexRoute = IndexRouteImport.update({
@@ -33,6 +35,11 @@ const AdminRoute = AdminRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DriverIndexRoute = DriverIndexRouteImport.update({
@@ -65,6 +72,11 @@ const ApiPublicReverseGeocodeRoute = ApiPublicReverseGeocodeRouteImport.update({
   path: '/api/public/reverse-geocode',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicRoutePathRoute = ApiPublicRoutePathRouteImport.update({
+  id: '/api/public/route-path',
+  path: '/api/public/route-path',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PassengerBusIdRoute = PassengerBusIdRouteImport.update({
   id: '/passenger/bus/$id',
   path: '/passenger/bus/$id',
@@ -75,24 +87,28 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/login': typeof LoginRoute
+  '/profile': typeof ProfileRoute
   '/driver/tracking': typeof DriverTrackingRoute
   '/driver/': typeof DriverIndexRoute
   '/passenger/': typeof PassengerIndexRoute
   '/api/public/geoapify-health': typeof ApiPublicGeoapifyHealthRoute
   '/api/public/geocode': typeof ApiPublicGeocodeRoute
   '/api/public/reverse-geocode': typeof ApiPublicReverseGeocodeRoute
+  '/api/public/route-path': typeof ApiPublicRoutePathRoute
   '/passenger/bus/$id': typeof PassengerBusIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/login': typeof LoginRoute
+  '/profile': typeof ProfileRoute
   '/driver/tracking': typeof DriverTrackingRoute
   '/driver': typeof DriverIndexRoute
   '/passenger': typeof PassengerIndexRoute
   '/api/public/geoapify-health': typeof ApiPublicGeoapifyHealthRoute
   '/api/public/geocode': typeof ApiPublicGeocodeRoute
   '/api/public/reverse-geocode': typeof ApiPublicReverseGeocodeRoute
+  '/api/public/route-path': typeof ApiPublicRoutePathRoute
   '/passenger/bus/$id': typeof PassengerBusIdRoute
 }
 export interface FileRoutesById {
@@ -100,12 +116,14 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/login': typeof LoginRoute
+  '/profile': typeof ProfileRoute
   '/driver/tracking': typeof DriverTrackingRoute
   '/driver/': typeof DriverIndexRoute
   '/passenger/': typeof PassengerIndexRoute
   '/api/public/geoapify-health': typeof ApiPublicGeoapifyHealthRoute
   '/api/public/geocode': typeof ApiPublicGeocodeRoute
   '/api/public/reverse-geocode': typeof ApiPublicReverseGeocodeRoute
+  '/api/public/route-path': typeof ApiPublicRoutePathRoute
   '/passenger/bus/$id': typeof PassengerBusIdRoute
 }
 export interface FileRouteTypes {
@@ -114,36 +132,42 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/login'
+    | '/profile'
     | '/driver/tracking'
     | '/driver/'
     | '/passenger/'
     | '/api/public/geoapify-health'
     | '/api/public/geocode'
     | '/api/public/reverse-geocode'
+    | '/api/public/route-path'
     | '/passenger/bus/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/admin'
     | '/login'
+    | '/profile'
     | '/driver/tracking'
     | '/driver'
     | '/passenger'
     | '/api/public/geoapify-health'
     | '/api/public/geocode'
     | '/api/public/reverse-geocode'
+    | '/api/public/route-path'
     | '/passenger/bus/$id'
   id:
     | '__root__'
     | '/'
     | '/admin'
     | '/login'
+    | '/profile'
     | '/driver/tracking'
     | '/driver/'
     | '/passenger/'
     | '/api/public/geoapify-health'
     | '/api/public/geocode'
     | '/api/public/reverse-geocode'
+    | '/api/public/route-path'
     | '/passenger/bus/$id'
   fileRoutesById: FileRoutesById
 }
@@ -151,12 +175,14 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
   LoginRoute: typeof LoginRoute
+  ProfileRoute: typeof ProfileRoute
   DriverTrackingRoute: typeof DriverTrackingRoute
   DriverIndexRoute: typeof DriverIndexRoute
   PassengerIndexRoute: typeof PassengerIndexRoute
   ApiPublicGeoapifyHealthRoute: typeof ApiPublicGeoapifyHealthRoute
   ApiPublicGeocodeRoute: typeof ApiPublicGeocodeRoute
   ApiPublicReverseGeocodeRoute: typeof ApiPublicReverseGeocodeRoute
+  ApiPublicRoutePathRoute: typeof ApiPublicRoutePathRoute
   PassengerBusIdRoute: typeof PassengerBusIdRoute
 }
 
@@ -181,6 +207,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/driver/': {
@@ -225,6 +258,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicReverseGeocodeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/route-path': {
+      id: '/api/public/route-path'
+      path: '/api/public/route-path'
+      fullPath: '/api/public/route-path'
+      preLoaderRoute: typeof ApiPublicRoutePathRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/passenger/bus/$id': {
       id: '/passenger/bus/$id'
       path: '/passenger/bus/$id'
@@ -239,12 +279,14 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
   LoginRoute: LoginRoute,
+  ProfileRoute: ProfileRoute,
   DriverTrackingRoute: DriverTrackingRoute,
   DriverIndexRoute: DriverIndexRoute,
   PassengerIndexRoute: PassengerIndexRoute,
   ApiPublicGeoapifyHealthRoute: ApiPublicGeoapifyHealthRoute,
   ApiPublicGeocodeRoute: ApiPublicGeocodeRoute,
   ApiPublicReverseGeocodeRoute: ApiPublicReverseGeocodeRoute,
+  ApiPublicRoutePathRoute: ApiPublicRoutePathRoute,
   PassengerBusIdRoute: PassengerBusIdRoute,
 }
 export const routeTree = rootRouteImport
